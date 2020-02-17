@@ -75,7 +75,7 @@ namespace TestBinarBredly
             Open.Enabled = false;
             Binarization.Enabled = false;
             await Task.Run(() => GetIntegralImage());
-			await Task.Run(() => BradlyBinarization());
+            await Task.Run(() => BradlyBinarization());
             pictureBox1.Image = imageBinariz;
             Binarization.Enabled = true;
             Open.Enabled = true;
@@ -95,9 +95,9 @@ namespace TestBinarBredly
             }
         }
 
-        public double GetSrRectangleSum(int x1, int y1, int x2, int y2)
+        public double GetSrRectangleSum(int x, int y)
         {
-            double sumLmObl = imageIntegral[x2, y2] + imageIntegral[x1, y1] - imageIntegral[x2, y1] - imageIntegral[x1, y2];
+            double sumLmObl = imageIntegral[x, y] + imageIntegral[x - d, y - d] - imageIntegral[x, y - d] - imageIntegral[x - d, y];
             double srObl = sumLmObl / (d * d);
             double procentOt_srObl = srObl * ((double)numericUpDown2.Value / 100);
             return srObl - procentOt_srObl;
@@ -105,39 +105,44 @@ namespace TestBinarBredly
 
         public void BradlyBinarization()
         {
-            int d2 = d / 2;
-            for (int i = 0; i < width; i++)
+            for (int i = 1; i <= width; i++)
             {
 				progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
-				
-                int x1 = i - d2;
-                int x2 = i + d2;
-                if (x1 < 0)
-                    x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
-
-                for (int j = 0; j < height; j++)
+                for (int j = 1; j <= height; j++)
                 {
-                    int y1 = j - d2;
-                    int y2 = j + d2;
-                    if (y1 < 0)
-                        y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    if (i % d == 0 && j % d == 0)
+                    {
+                        OblastBinarization(i, j);
+                    }
+                }
+            }
 
-                    double porogVelich = GetSrRectangleSum(x1, y1, x2, y2);
-                    double pixel = imageOriginal.GetPixel(i, j).GetBrightness();
-
-                    if (pixel < porogVelich)
-                        imageBinariz.SetPixel(i, j, Color.Black);
-                    else
-                        imageBinariz.SetPixel(i, j, Color.White);
+            if (height % d != 0 && d != width)
+            {
+                for (int i = d; i <= width; i += d)
+                {
+                    OblastBinarization(i, height);
                 }
             }
         }
 
-        void SetStatusAsync(string Message, bool Hide = true)
+        public void OblastBinarization(int x, int y)
+        {
+            double porogVelich = GetSrRectangleSum(x, y);
+            for (int i = x - d + 1; i <= x; i++)
+            {
+                for (int j = y - d + 1; j <= y; j++)
+                {
+                    double pixel = imageOriginal.GetPixel(i - 1, j - 1).GetBrightness();
+                    if (pixel < porogVelich)
+                        imageBinariz.SetPixel(i - 1, j - 1, Color.Black);
+                    else
+                        imageBinariz.SetPixel(i - 1, j - 1, Color.White);
+                }
+            }
+        }
+
+            void SetStatusAsync(string Message, bool Hide = true)
         {
             cancelTokenStatus.Cancel();
             Task.Run(() =>

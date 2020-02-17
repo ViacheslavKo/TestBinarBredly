@@ -95,9 +95,9 @@ namespace TestBinarBredly
             }
         }
 
-        public double GetSrRectangleSum(int x1, int y1, int x2, int y2)
+        public double GetSrRectangleSum(int x, int y)
         {
-            double sumLmObl = imageIntegral[x2, y2] + imageIntegral[x1, y1] - imageIntegral[x2, y1] - imageIntegral[x1, y2];
+            double sumLmObl = imageIntegral[x, y] + imageIntegral[x - d, y - d] - imageIntegral[x, y - d] - imageIntegral[x - d, y];
             double srObl = sumLmObl / (d * d);
             double procentOt_srObl = srObl * ((double)numericUpDown2.Value / 100);
             return srObl - procentOt_srObl;
@@ -105,28 +105,21 @@ namespace TestBinarBredly
 
         public void BradlyBinarization()
         {
-            int d2 = d / 2;
             for (int i = 0; i < width; i++)
             {
 				progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
 				
-                int x1 = i - d2;
-                int x2 = i + d2;
-                if (x1 < 0)
-                    x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
+                int x = i + d;
+                if (x >= width)
+                    x = width - 1;
 
                 for (int j = 0; j < height; j++)
                 {
-                    int y1 = j - d2;
-                    int y2 = j + d2;
-                    if (y1 < 0)
-                        y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    int y = j + d;
+                    if (y >= height)
+                        y = height - 1;
 
-                    double porogVelich = GetSrRectangleSum(x1, y1, x2, y2);
+                    double porogVelich = GetSrRectangleSum(x, y);
                     double pixel = imageOriginal.GetPixel(i, j).GetBrightness();
 
                     if (pixel < porogVelich)
