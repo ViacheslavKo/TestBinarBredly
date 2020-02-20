@@ -46,12 +46,12 @@ namespace TestBinarBredly
 					
 					label4.Text = "Ширина: " + width + " px";
                     label5.Text = "Высота: " + height + " px";
-					progressBar1.Maximum = width;
+                    progressBar1.Value = 0;
+                    progressBar1.Maximum = width;
                 }
                 catch
                 {
-                    DialogResult rezult = MessageBox.Show("Невозможно открыть выбранный файл",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Невозможно открыть выбранный файл", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -69,6 +69,7 @@ namespace TestBinarBredly
         private async void Binarization_Click(object sender, EventArgs e)
         {
             SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
+            progressBar1.Value = 0;
             imageBinariz = new Bitmap(width, height);
             d = width / (int)numericUpDown1.Value;//4 - большое изображение, 8 - маленькое
             saveBinariz.Enabled = false;
