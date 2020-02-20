@@ -43,8 +43,8 @@ namespace TestBinarBredly
 
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = true;
-					
-					label4.Text = "Ширина: " + width + " px";
+
+                    label4.Text = "Ширина: " + width + " px";
                     label5.Text = "Высота: " + height + " px";
                     progressBar1.Value = 0;
                     progressBar1.Maximum = width;
@@ -76,7 +76,7 @@ namespace TestBinarBredly
             Open.Enabled = false;
             Binarization.Enabled = false;
             await Task.Run(() => GetIntegralImage());
-			await Task.Run(() => BradlyBinarization());
+            await Task.Run(() => BradlyBinarization());
             pictureBox1.Image = imageBinariz;
             Binarization.Enabled = true;
             Open.Enabled = true;
@@ -86,13 +86,24 @@ namespace TestBinarBredly
 
         public void GetIntegralImage()
         {
-            for (int i = 1; i <= width; i++)
+            System.Drawing.Imaging.BitmapData bdImageOrig = imageOriginal.LockBits(new Rectangle(0, 0, width, height),
+                        System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            unsafe
             {
-                for (int j = 1; j <= height; j++)
+                byte* curpos;
+
+                for (int i = 1; i <= width; i++)
                 {
-                    double pixel = imageOriginal.GetPixel(i - 1, j - 1).GetBrightness();
-                    imageIntegral[i, j] = pixel + imageIntegral[i - 1, j] + imageIntegral[i, j - 1] - imageIntegral[i - 1, j - 1];
+                    curpos = ((byte*)bdImageOrig.Scan0) + i * bdImageOrig.Stride;
+                    for (int j = 1; j <= height; j++)
+                    {
+                        //double pixel = imageOriginal.GetPixel(i - 1, j - 1).GetBrightness();
+                        double ree = *(curpos++) / 255.0;
+                        imageIntegral[i, j] = ree + imageIntegral[i - 1, j] + imageIntegral[i, j - 1] - imageIntegral[i - 1, j - 1];
+                    }
                 }
+                imageOriginal.UnlockBits(bdImageOrig);
             }
         }
 
@@ -106,35 +117,46 @@ namespace TestBinarBredly
 
         public void BradlyBinarization()
         {
-            int d2 = d / 2;
-            for (int i = 0; i < width; i++)
+            System.Drawing.Imaging.BitmapData bdImageOrig = imageOriginal.LockBits(new Rectangle(0, 0, width, height),
+                        System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            unsafe
             {
-				progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
-				
-                int x1 = i - d2;
-                int x2 = i + d2;
-                if (x1 < 0)
-                    x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
+                byte* curpos;
 
-                for (int j = 0; j < height; j++)
+                int d2 = d / 2;
+                for (int i = 0; i < width; i++)
                 {
-                    int y1 = j - d2;
-                    int y2 = j + d2;
-                    if (y1 < 0)
-                        y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
 
-                    double porogVelich = GetSrRectangleSum(x1, y1, x2, y2);
-                    double pixel = imageOriginal.GetPixel(i, j).GetBrightness();
+                    curpos = ((byte*)bdImageOrig.Scan0) + i * bdImageOrig.Stride;
 
-                    if (pixel < porogVelich)
-                        imageBinariz.SetPixel(i, j, Color.Black);
-                    else
-                        imageBinariz.SetPixel(i, j, Color.White);
+                    int x1 = i - d2;
+                    int x2 = i + d2;
+                    if (x1 < 0)
+                        x1 = 0;
+                    if (x2 >= width)
+                        x2 = width - 1;
+
+                    for (int j = 0; j < height; j++)
+                    {
+                        int y1 = j - d2;
+                        int y2 = j + d2;
+                        if (y1 < 0)
+                            y1 = 0;
+                        if (y2 >= height)
+                            y2 = height - 1;
+
+                        double ree = *(curpos++) / 255.0;
+                        double porogVelich = GetSrRectangleSum(x1, y1, x2, y2);
+                        //double pixel = imageOriginal.GetPixel(i, j).GetBrightness();
+
+                        if (ree < porogVelich)
+                            imageBinariz.SetPixel(i, j, Color.Black);
+                        else
+                            imageBinariz.SetPixel(i, j, Color.White);
+                    }
                 }
+                imageOriginal.UnlockBits(bdImageOrig);
             }
         }
 

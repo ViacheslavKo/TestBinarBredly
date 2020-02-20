@@ -15,3 +15,4 @@ C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\Test
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.csproj.GenerateResource.cache
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.exe
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.pdb
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.csprojAssemblyReference.cache
