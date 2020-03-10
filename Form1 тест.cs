@@ -9,9 +9,10 @@ namespace TestBinarBredly
 {
     public partial class Form1 : Form
     {
-        Bitmap imageOriginal, imageBinariz;
+        Bitmap imageOriginal, bitmapImageBinariz;
         int width, height, d;
         double[,] imageIntegral;
+        byte[] imageBinarizByte;
 
         CancellationTokenSource cancelTokenStatus = new CancellationTokenSource();
         CancellationToken tokenStatus;
@@ -35,24 +36,23 @@ namespace TestBinarBredly
                 try
                 {
                     imageOriginal = new Bitmap(open_dialog.FileName);
-
                     width = imageOriginal.Width;
                     height = imageOriginal.Height;
-                    imageIntegral = new double[imageOriginal.Width + 1, imageOriginal.Height + 1];
 
+                    imageIntegral = new double[height + 1, width + 1];
+                    imageBinarizByte = new byte[height * width];
                     pictureBox1.Image = imageOriginal;
 
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = true;
-					
-					label4.Text = "Ширина: " + width + " px";
+                    label4.Text = "Ширина: " + width + " px";
                     label5.Text = "Высота: " + height + " px";
-					progressBar1.Maximum = width;
+                    progressBar1.Value = 0;
+                    progressBar1.Maximum = height;
                 }
                 catch
                 {
-                    DialogResult rezult = MessageBox.Show("Невозможно открыть выбранный файл",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Невозможно открыть выбранный файл", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -63,14 +63,14 @@ namespace TestBinarBredly
             save_dialog.Filter = "Image Files(*.Bmp;)(*.Jpg;)|*.Bmp;*.Jpg;|All files (*.*)|*.*";
             if (save_dialog.ShowDialog() == DialogResult.OK)
             {
-                imageBinariz.Save(save_dialog.FileName);
+                bitmapImageBinariz.Save(save_dialog.FileName);
             }
         }
 
         private async void Binarization_Click(object sender, EventArgs e)
         {
             SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
-            imageBinariz = new Bitmap(width, height);
+            progressBar1.Value = 0;
             d = width / (int)numericUpDown1.Value;//4 - большое изображение, 8 - маленькое
             saveBinariz.Enabled = false;
             Open.Enabled = false;
@@ -80,8 +80,9 @@ namespace TestBinarBredly
             stopWatch.Start();
 
             await Task.Run(() => GetIntegralImage());
-			await Task.Run(() => BradlyBinarization());
-            pictureBox1.Image = imageBinariz;
+            await Task.Run(() => BradlyBinarization());
+            bitmapImageBinariz = ByteArrayToBitmap(imageBinarizByte, width, height);
+            pictureBox1.Image = bitmapImageBinariz;
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
@@ -93,16 +94,16 @@ namespace TestBinarBredly
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
-        public void GetIntegralImage()
+        public Bitmap ByteArrayToBitmap(byte[] byteIn, int imwidth, int imheight)
         {
-            for (int i = 1; i <= width; i++)
-            {
-                for (int j = 1; j <= height; j++)
-                {
-                    double pixel = imageOriginal.GetPixel(i - 1, j - 1).GetBrightness();
-                    imageIntegral[i, j] = pixel + imageIntegral[i - 1, j] + imageIntegral[i, j - 1] - imageIntegral[i - 1, j - 1];
-                }
-            }
+            Bitmap picOut = new Bitmap(imwidth, imheight, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            System.Drawing.Imaging.BitmapData bmpData = picOut.LockBits(new Rectangle(0, 0, imwidth, imheight), 
+                System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            IntPtr ptr = bmpData.Scan0;
+            Int32 psize = bmpData.Stride * imheight;
+            System.Runtime.InteropServices.Marshal.Copy(byteIn, 0, ptr, psize);
+            picOut.UnlockBits(bmpData);
+            return picOut;
         }
 
         public double GetSrRectangleSum(int x1, int y1, int x2, int y2)
@@ -113,37 +114,68 @@ namespace TestBinarBredly
             return srObl - procentOt_srObl;
         }
 
+        public void GetIntegralImage()
+        {
+            System.Drawing.Imaging.BitmapData bdImageOrig = imageOriginal.LockBits(new Rectangle(0, 0, width, height),
+                        System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);//imageOriginal.PixelFormat
+            unsafe
+            {
+                byte* curpos = ((byte*)bdImageOrig.Scan0);
+                for (int i = 1; i <= height; i++)
+                {
+                    for (int j = 1; j <= width; j++)
+                    {
+                        double ree = *curpos++;
+                        imageIntegral[i, j] = ree + imageIntegral[i - 1, j] + imageIntegral[i, j - 1] - imageIntegral[i - 1, j - 1];
+                    }
+                }
+                imageOriginal.UnlockBits(bdImageOrig);
+            }
+        }
+
         public void BradlyBinarization()
         {
-            int d2 = d / 2;
-            for (int i = 0; i < width; i++)
+            System.Drawing.Imaging.BitmapData bdImageOrig = imageOriginal.LockBits(new Rectangle(0, 0, width, height),
+                        System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            unsafe
             {
-				progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
-				
-                int x1 = i - d2;
-                int x2 = i + d2;
-                if (x1 < 0)
-                    x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
-
-                for (int j = 0; j < height; j++)
+                int scht = 0;
+                byte* curpos = ((byte*) bdImageOrig.Scan0);
+                int d2 = d / 2;
+                for (int i = 0; i < height; i++)
                 {
-                    int y1 = j - d2;
-                    int y2 = j + d2;
-                    if (y1 < 0)
-                        y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    //progressBar1.Invoke(new Action(() => { progressBar1.Value = i; }));
 
-                    double porogVelich = GetSrRectangleSum(x1, y1, x2, y2);
-                    double pixel = imageOriginal.GetPixel(i, j).GetBrightness();
+                    int x1 = i - d2;
+                    int x2 = i + d2;
+                    if (x1 < 0)
+                        x1 = 0;
+                    if (x2 >= height)
+                        x2 = height - 1;
 
-                    if (pixel < porogVelich)
-                        imageBinariz.SetPixel(i, j, Color.Black);
-                    else
-                        imageBinariz.SetPixel(i, j, Color.White);
+                    for (int j = 0; j < width; j++)
+                    {
+                        int y1 = j - d2;
+                        int y2 = j + d2;
+                        if (y1 < 0)
+                            y1 = 0;
+                        if (y2 >= width)
+                            y2 = width - 1;
+
+                        if (*curpos++ < GetSrRectangleSum(x1, y1, x2, y2))
+                        {
+                            imageBinarizByte[scht] = 0x00;
+                            //imageBinariz0or1[i, j] = 0;//0x00 Black
+                        }
+                        else
+                        {
+                            imageBinarizByte[scht] = 0xFF;
+                            //imageBinariz0or1[i, j] = 1;//0xFF White
+                        }
+                        scht++;
+                    }
                 }
+                imageOriginal.UnlockBits(bdImageOrig);
             }
         }
 
