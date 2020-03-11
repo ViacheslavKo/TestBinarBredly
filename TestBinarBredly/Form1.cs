@@ -39,7 +39,7 @@ namespace TestBinarBredly
                     label4.Text = "Ширина: " + photoObj.Width + " px";
                     label5.Text = "Высота: " + photoObj.Height + " px";
                     Binarization.Enabled = true;
-                    saveBinariz.Enabled = true;
+                    saveBinariz.Enabled = false;
                     button1.Enabled = false;
                     button2.Enabled = false;
                 }
@@ -84,6 +84,8 @@ namespace TestBinarBredly
             Open.Enabled = true;
             saveBinariz.Enabled = true;
             button1.Enabled = true;
+            button2.Enabled = false;
+            saveBinariz.Enabled = true;
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
