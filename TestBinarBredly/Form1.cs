@@ -36,10 +36,12 @@ namespace TestBinarBredly
                     photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
                     pictureBox1.Image = photoObj.GetImageOriginal;
 
-                    Binarization.Enabled = true;
-                    saveBinariz.Enabled = true;
                     label4.Text = "Ширина: " + photoObj.Width + " px";
                     label5.Text = "Высота: " + photoObj.Height + " px";
+                    Binarization.Enabled = true;
+                    saveBinariz.Enabled = true;
+                    button1.Enabled = false;
+                    button2.Enabled = false;
                 }
                 catch
                 {
@@ -81,6 +83,8 @@ namespace TestBinarBredly
             Binarization.Enabled = true;
             Open.Enabled = true;
             saveBinariz.Enabled = true;
+            button1.Enabled = true;
+            button2.Enabled = true;
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
@@ -122,6 +126,15 @@ namespace TestBinarBredly
             });
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = photoObj.GetImageOriginal;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = photoObj.GetImageBinariz;
+        }
     }
 }
 
