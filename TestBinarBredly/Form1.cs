@@ -34,11 +34,10 @@ namespace TestBinarBredly
                 try
                 {
                     photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
-
                     pictureBox1.Image = photoObj.GetImageOriginal;
+
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = true;
-
                     label4.Text = "Ширина: " + photoObj.Width + " px";
                     label5.Text = "Высота: " + photoObj.Height + " px";
                 }
@@ -70,8 +69,8 @@ namespace TestBinarBredly
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            photoObj.OblastD = (int)numericUpDown1.Value;
-            photoObj.Procent = (double)numericUpDown2.Value;
+            photoObj.SetOblastD = (int)numericUpDown1.Value;
+            photoObj.SetProcent = (double)numericUpDown2.Value;
             await photoObj.StartBradlyBinar();
             pictureBox1.Image = photoObj.GetImageBinariz;
 
