@@ -84,7 +84,6 @@ namespace TestBinarBredly
             Open.Enabled = true;
             saveBinariz.Enabled = true;
             button1.Enabled = true;
-            button2.Enabled = true;
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
@@ -129,11 +128,15 @@ namespace TestBinarBredly
         private void button1_Click(object sender, EventArgs e)
         {
             pictureBox1.Image = photoObj.GetImageOriginal;
+            button1.Enabled = false;
+            button2.Enabled = true;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             pictureBox1.Image = photoObj.GetImageBinariz;
+            button1.Enabled = true;
+            button2.Enabled = false;
         }
     }
 }
