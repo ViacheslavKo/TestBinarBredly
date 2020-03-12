@@ -15,7 +15,7 @@ namespace TestBinarBredly
         private Bitmap imageOrig = null;
         private Bitmap imageBinar = null;
         private double[,] imageIntegr = null;
-        private byte[,] massByteImageOrig = null;
+        private double[,] massByteImageOrig = null;
         private byte[,] massByteImageBinar = null;
         private int width = -1;
         private int height = -1;
@@ -125,6 +125,7 @@ namespace TestBinarBredly
 
         /// <summary>
         /// Получить оригинальное изображение.
+        /// Если его нет return -> null
         /// </summary>
         public Bitmap GetImageOrig
         {
@@ -164,6 +165,8 @@ namespace TestBinarBredly
             await Task.Run(() => BitmapToByteArray());
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
+            imageIntegr = null;
+            massByteImageOrig = null;
         }
 
         /// <summary>
@@ -180,15 +183,17 @@ namespace TestBinarBredly
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
             await Task.Run(() => ByteArrayToBitmap());
+            imageIntegr = null;
+            massByteImageOrig = null;
         }
         #endregion
 
         #region private функции
         private void InitMassiv()
         {
-            massByteImageOrig = new byte[width, height];
-            imageIntegr = new double[width + 1, height + 1];
-            massByteImageBinar = new byte[width, height];
+            massByteImageOrig = new double[height, width];
+            imageIntegr = new double[height + 1, width + 1];
+            massByteImageBinar = new byte[height, width];
         }
 
         private void ByteArrayToBitmap()
@@ -196,11 +201,12 @@ namespace TestBinarBredly
             imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
             BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             IntPtr ptr = bmpData.Scan0;
+
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    Marshal.WriteByte(ptr, massByteImageBinar[j, i]);
+                    Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
                     ptr += 0x01;
                 }
             }
@@ -209,23 +215,55 @@ namespace TestBinarBredly
 
         private void BitmapToByteArray()
         {
-            BitmapData bmpData = imageOrig.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);// PixelFormat.Format8bppIndexed
+            BitmapData bmpData = imageOrig.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, imageOrig.PixelFormat);
             IntPtr ptr = bmpData.Scan0;
-            for (int i = 0; i < height; i++)
+
+            switch (imageOrig.PixelFormat)
             {
-                for (int j = 0; j < width; j++)
-                {
-                    massByteImageOrig[j, i] = Marshal.ReadByte(ptr);
-                    ptr += 0x01;
-                }
+                case PixelFormat.Format8bppIndexed:
+                    {
+                        for (int i = 0; i < height; i++)
+                        {
+                            for (int j = 0; j < width; j++)
+                            {
+                                massByteImageOrig[i, j] = Marshal.ReadByte(ptr);
+                                ptr += 0x01;
+                            }
+                        }
+                    }
+                    break;
+
+                case PixelFormat.Format24bppRgb:
+                    {
+                        for (int i = 0; i < height; i++)
+                        {
+                            for (int j = 0; j < width; j++)
+                            {
+                                double B = Marshal.ReadByte(ptr);
+                                ptr += 0x01;
+                                double G = Marshal.ReadByte(ptr);
+                                ptr += 0x01;
+                                double R = Marshal.ReadByte(ptr);
+                                ptr += 0x01;
+
+                                massByteImageOrig[i, j] = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        throw new ArgumentException("PixelFormat is not correct.");
+                    }
             }
             imageOrig.UnlockBits(bmpData);
         }
+
         private void CreateIntegralImage()
         {
-            for (int i = 1; i <= width; i++)
+            for (int i = 1; i <= height; i++)
             {
-                for (int j = 1; j <= height; j++)
+                for (int j = 1; j <= width; j++)
                 {
                     imageIntegr[i, j] = massByteImageOrig[i - 1, j - 1] + imageIntegr[i - 1, j] + imageIntegr[i, j - 1] - imageIntegr[i - 1, j - 1];
                 }
@@ -243,23 +281,23 @@ namespace TestBinarBredly
         private void BradlyBinarization()
         {
             int d2 = d / 2;
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < height; i++)
             {
                 int x1 = i - d2;
                 int x2 = i + d2;
                 if (x1 < 0)
                     x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
+                if (x2 >= height)
+                    x2 = height - 1;
 
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < width; j++)
                 {
                     int y1 = j - d2;
                     int y2 = j + d2;
                     if (y1 < 0)
                         y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    if (y2 >= width)
+                        y2 = width - 1;
 
                     if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
                     {
@@ -271,6 +309,25 @@ namespace TestBinarBredly
                     }
                 }
             }
+        }
+
+        private double GetBrightness(double R, double G, double B)
+        {
+            double r = R / 255.0;
+            double g = G / 255.0;
+            double b = B / 255.0;
+
+            double max, min;
+
+            max = r; min = r;
+
+            if (g > max) max = g;
+            if (b > max) max = b;
+
+            if (g < min) min = g;
+            if (b < min) min = b;
+
+            return (max + min) / 2;
         }
         #endregion
     }
