@@ -12,13 +12,13 @@ namespace TestBinarBredly
     class BinarBradly
     {
         #region Поля
-        private Bitmap imageOrig;
+        private Bitmap imageOrig = null;
         private Bitmap imageBinar = null;
-        private double[,] imageIntegr;
-        private byte[,] massByteImageOrig;
+        private double[,] imageIntegr = null;
+        private byte[,] massByteImageOrig = null;
         private byte[,] massByteImageBinar = null;
-        private int width;
-        private int height;
+        private int width = -1;
+        private int height = -1;
         private int d = 8;
         private double procentObl = 15;
         private byte white = 1;
@@ -26,6 +26,20 @@ namespace TestBinarBredly
         #endregion
 
         #region Конструкторы
+
+        /// <summary>
+        /// Инициализирует пустой экземпляр класса.
+        /// </summary>
+        public BinarBradly()
+        {
+            imageOrig = null;
+            imageBinar = null;
+            massByteImageBinar = null;
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса с фото.
+        /// </summary>
         public BinarBradly(Bitmap Original)
         {
             this.imageOrig = Original;
@@ -33,6 +47,9 @@ namespace TestBinarBredly
             this.height = imageOrig.Height;
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса с фото и устанавливает параметры D и %.
+        /// </summary>
         public BinarBradly(Bitmap Original, int OblastD, double Procent_srObl)
         {
             this.imageOrig = Original;
@@ -44,6 +61,24 @@ namespace TestBinarBredly
         #endregion
 
         #region Свойства
+        /// <summary>
+        /// Загрузить новое оригинальное изображение.
+        /// </summary>
+        public Bitmap SetImageOrig
+        {
+            set
+            {
+                this.imageOrig = value;
+                this.width = imageOrig.Width;
+                this.height = imageOrig.Height;
+
+                imageBinar = null;
+                imageIntegr = null;
+                massByteImageOrig = null;
+                massByteImageBinar = null;
+            }
+        }
+
         /// <summary>
         /// Установить D - размер области для вычисления средней яркости вокруг пикселя. (width / d)
         /// </summary>
@@ -91,7 +126,7 @@ namespace TestBinarBredly
         /// <summary>
         /// Получить оригинальное изображение.
         /// </summary>
-        public Bitmap GetImageOriginal
+        public Bitmap GetImageOrig
         {
             get => imageOrig;
         }
@@ -122,6 +157,7 @@ namespace TestBinarBredly
         /// </summary>
         public async Task StartBradlyBinar_0and1()
         {
+            if (imageOrig == null) { return; }
             white = 1;
             black = 0;
             await Task.Run(() => InitMassiv());
@@ -136,6 +172,7 @@ namespace TestBinarBredly
         /// </summary>
         public async Task StartBradlyBinar()
         {
+            if (imageOrig == null) { return; }
             white = 0xFF;
             black = 0x00;
             await Task.Run(() => InitMassiv());
@@ -145,7 +182,7 @@ namespace TestBinarBredly
             await Task.Run(() => ByteArrayToBitmap());
         }
         #endregion
-        
+
         #region private функции
         private void InitMassiv()
         {

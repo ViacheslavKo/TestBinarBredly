@@ -10,7 +10,7 @@ namespace TestBinarBredly
 {
     public partial class Form1 : Form
     {
-        BinarBradly photoObj;
+        BinarBradly photoObj = new BinarBradly();
 
         CancellationTokenSource cancelTokenStatus = new CancellationTokenSource();
         CancellationToken tokenStatus;
@@ -33,8 +33,8 @@ namespace TestBinarBredly
             {
                 try
                 {
-                    photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
-                    pictureBox1.Image = photoObj.GetImageOriginal;
+                    photoObj.SetImageOrig = new Bitmap(open_dialog.FileName);
+                    pictureBox1.Image = photoObj.GetImageOrig;
 
                     label4.Text = "Ширина: " + photoObj.Width + " px";
                     label5.Text = "Высота: " + photoObj.Height + " px";
@@ -129,7 +129,7 @@ namespace TestBinarBredly
 
         private void button1_Click(object sender, EventArgs e)
         {
-            pictureBox1.Image = photoObj.GetImageOriginal;
+            pictureBox1.Image = photoObj.GetImageOrig;
             button1.Enabled = false;
             button2.Enabled = true;
         }
