@@ -1,0 +1,9 @@
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\bin\Release\TestBinarBredly.exe.config
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\bin\Release\TestBinarBredly.exe
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\bin\Release\TestBinarBredly.pdb
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.csprojAssemblyReference.cache
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.Form1.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.Properties.Resources.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.csproj.GenerateResource.cache
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.exe
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.pdb

@@ -171,7 +171,7 @@ namespace TestBinarBredly
 
         /// <summary>
         /// Запуск обработки фото и создать фото(Bitmap).
-        /// Массив байт будет состоять из 0х00 и 0xFF
+        /// Массив байт будет состоять из 0х00 и 0xFF (0 и 255)
         /// </summary>
         public async Task StartBradlyBinar()
         {
