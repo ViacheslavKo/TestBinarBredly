@@ -190,8 +190,8 @@ namespace TestBinarBredly
         #region private функции
         private void ByteArrayToBitmap()
         {
-            imageBinar = new Bitmap(StrideWidth, height, PixelFormat.Format8bppIndexed);
-            BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, StrideWidth, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
+            BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             IntPtr ptr = bmpData.Scan0;
 
             for (int i = 0; i < height; i++)
@@ -209,6 +209,7 @@ namespace TestBinarBredly
         {
             BitmapData bmpData = imageOrig.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, imageOrig.PixelFormat);
             IntPtr ptr = bmpData.Scan0;
+
             switch (imageOrig.PixelFormat)
             {
                 case PixelFormat.Format8bppIndexed:
