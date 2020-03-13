@@ -159,7 +159,7 @@ namespace TestBinarBredly
         /// </summary>
         public async Task StartBradlyBinar_0and1()
         {
-            if (imageOrig == null) { return; }
+            if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             white = 1;
             black = 0;
             await Task.Run(() => BitmapToByteArray());
@@ -167,6 +167,8 @@ namespace TestBinarBredly
             await Task.Run(() => BradlyBinarization());
             imageIntegr = null;
             massByteImageOrig = null;
+            //if (StrideWidth > width)
+            //    ReSizeMassBinar();
         }
 
         /// <summary>
@@ -175,7 +177,7 @@ namespace TestBinarBredly
         /// </summary>
         public async Task StartBradlyBinar()
         {
-            if (imageOrig == null) { return; }
+            if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             white = 0xFF;
             black = 0x00;
             await Task.Run(() => BitmapToByteArray());
@@ -188,6 +190,20 @@ namespace TestBinarBredly
         #endregion
 
         #region private функции
+
+        //private byte[,] massByteImageBinarRe = null;
+        //private void ReSizeMassBinar()
+        //{
+        //    massByteImageBinarRe = new byte[height, width];
+        //    for (int i = 0; i < height; i++)
+        //    {
+        //        for (int j = 0; j < width; j++)
+        //        {
+        //            massByteImageBinarRe[i, j] = massByteImageBinar[i, j];
+        //        }
+        //    }
+        //}
+
         private void ByteArrayToBitmap()
         {
             imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
