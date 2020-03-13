@@ -167,8 +167,6 @@ namespace TestBinarBredly
             await Task.Run(() => BradlyBinarization());
             imageIntegr = null;
             massByteImageOrig = null;
-            //if (StrideWidth > width)
-            //    ReSizeMassBinar();
         }
 
         /// <summary>
@@ -191,19 +189,6 @@ namespace TestBinarBredly
 
         #region private функции
 
-        //private byte[,] massByteImageBinarRe = null;
-        //private void ReSizeMassBinar()
-        //{
-        //    massByteImageBinarRe = new byte[height, width];
-        //    for (int i = 0; i < height; i++)
-        //    {
-        //        for (int j = 0; j < width; j++)
-        //        {
-        //            massByteImageBinarRe[i, j] = massByteImageBinar[i, j];
-        //        }
-        //    }
-        //}
-
         private void ByteArrayToBitmap()
         {
             imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
@@ -214,7 +199,8 @@ namespace TestBinarBredly
             {
                 for (int j = 0; j < StrideWidth; j++)
                 {
-                    Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
+                    if (j < width)
+                        Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
                     ptr += 0x01;
                 }
             }
@@ -275,16 +261,16 @@ namespace TestBinarBredly
 
         private void InitMassiv()
         {
-            imageIntegr = new double[height + 1, StrideWidth + 1];
+            imageIntegr = new double[height + 1, width + 1];
             massByteImageOrig = new double[height, StrideWidth];
-            massByteImageBinar = new byte[height, StrideWidth];
+            massByteImageBinar = new byte[height, width];
         }
 
         private void CreateIntegralImage()
         {
             for (int i = 1; i <= height; i++)
             {
-                for (int j = 1; j <= StrideWidth; j++)
+                for (int j = 1; j <= width; j++)
                 {
                     imageIntegr[i, j] = massByteImageOrig[i - 1, j - 1] + imageIntegr[i - 1, j] + imageIntegr[i, j - 1] - imageIntegr[i - 1, j - 1];
                 }
@@ -311,14 +297,14 @@ namespace TestBinarBredly
                 if (x2 >= height)
                     x2 = height - 1;
 
-                for (int j = 0; j < StrideWidth; j++)
+                for (int j = 0; j < width; j++)
                 {
                     int y1 = j - d2;
                     int y2 = j + d2;
                     if (y1 < 0)
                         y1 = 0;
-                    if (y2 >= StrideWidth)
-                        y2 = StrideWidth - 1;
+                    if (y2 >= width)
+                        y2 = width - 1;
 
                     if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
                     {
