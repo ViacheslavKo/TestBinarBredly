@@ -14,7 +14,8 @@ namespace TestBinarBredly
         #region Поля
         private Bitmap imageOrig = null;
         private Bitmap imageBinar = null;
-        private double[,] imageIntegr = null;
+        private double[,] imageIntegrOrig = null;
+        private int[,] imageIntegrBinar = null;
         private double[,] massByteImageOrig = null;
         private byte[,] massByteImageBinar = null;
         private int width = -1;
@@ -36,6 +37,7 @@ namespace TestBinarBredly
             imageOrig = null;
             imageBinar = null;
             massByteImageBinar = null;
+            imageIntegrBinar = null;
         }
 
         /// <summary>
@@ -74,9 +76,10 @@ namespace TestBinarBredly
                 this.height = imageOrig.Height;
 
                 imageBinar = null;
-                imageIntegr = null;
+                imageIntegrOrig = null;
                 massByteImageOrig = null;
                 massByteImageBinar = null;
+                imageIntegrBinar = null;
             }
         }
 
@@ -150,6 +153,16 @@ namespace TestBinarBredly
         {
             get => massByteImageBinar;
         }
+
+        /// <summary>
+        /// Получить массив бинаризированного интегрированного изобр.
+        /// Если его нет return -> null
+        /// Размер [width + 1, height + 1]. Полезные данные начинаются с позиции [1, 1]
+        /// </summary>
+        public int[,] GetImageIntegrBinar
+        {
+            get => imageIntegrBinar;
+        }
         #endregion
 
         #region Start функции
@@ -165,7 +178,7 @@ namespace TestBinarBredly
             await Task.Run(() => BitmapToByteArray());
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
-            imageIntegr = null;
+            imageIntegrOrig = null;
             massByteImageOrig = null;
         }
 
@@ -182,7 +195,7 @@ namespace TestBinarBredly
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
             await Task.Run(() => ByteArrayToBitmap());
-            imageIntegr = null;
+            imageIntegrOrig = null;
             massByteImageOrig = null;
         }
         #endregion
@@ -261,9 +274,10 @@ namespace TestBinarBredly
 
         private void InitMassiv()
         {
-            imageIntegr = new double[height + 1, width + 1];
+            imageIntegrOrig = new double[height + 1, width + 1];
             massByteImageOrig = new double[height, StrideWidth];
             massByteImageBinar = new byte[height, width];
+            imageIntegrBinar = new int[height + 1, width + 1];
         }
 
         private void CreateIntegralImage()
@@ -272,14 +286,14 @@ namespace TestBinarBredly
             {
                 for (int j = 1; j <= width; j++)
                 {
-                    imageIntegr[i, j] = massByteImageOrig[i - 1, j - 1] + imageIntegr[i - 1, j] + imageIntegr[i, j - 1] - imageIntegr[i - 1, j - 1];
+                    imageIntegrOrig[i, j] = massByteImageOrig[i - 1, j - 1] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
                 }
             }
         }
 
         private double SrRectangleSum(int x1, int y1, int x2, int y2)
         {
-            double sumLmObl = imageIntegr[x2, y2] + imageIntegr[x1, y1] - imageIntegr[x2, y1] - imageIntegr[x1, y2];
+            double sumLmObl = imageIntegrOrig[x2, y2] + imageIntegrOrig[x1, y1] - imageIntegrOrig[x2, y1] - imageIntegrOrig[x1, y2];
             double srObl = sumLmObl / (d * d);
             double procentOt_srObl = srObl * (procentObl / 100);
             return srObl - procentOt_srObl;
@@ -314,6 +328,8 @@ namespace TestBinarBredly
                     {
                         massByteImageBinar[i, j] = white;
                     }
+
+                    imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
                 }
             }
         }
