@@ -157,7 +157,7 @@ namespace TestBinarBredly
         /// <summary>
         /// Получить массив бинаризированного интегрированного изобр.
         /// Если его нет return -> null
-        /// Размер [width + 1, height + 1]. Полезные данные начинаются с позиции [1, 1]
+        /// Размер [height + 1, width + 1]. Полезные данные начинаются с позиции [1, 1]
         /// </summary>
         public int[,] GetImageIntegrBinar
         {
@@ -275,9 +275,9 @@ namespace TestBinarBredly
         private void InitMassiv()
         {
             imageIntegrOrig = new double[height + 1, width + 1];
+            imageIntegrBinar = new int[height + 1, width + 1];
             massByteImageOrig = new double[height, StrideWidth];
             massByteImageBinar = new byte[height, width];
-            imageIntegrBinar = new int[height + 1, width + 1];
         }
 
         private void CreateIntegralImage()
@@ -329,12 +329,14 @@ namespace TestBinarBredly
                         massByteImageBinar[i, j] = white;
                     }
 
-                    imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
+                    // Не помню нужно было тебе бинаризированное интегрированное изображение. Пока закоментировал, но еще есть свойство для получения этого массива.
+                    // Добавляет еще ~0.055 сек. к обработке.
+                    //imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
                 }
             }
         }
 
-        private double GetBrightness(double R, double G, double B)
+        private double GetBrightness(double R, double G, double B)// Функция получения яркости как у Microsoft
         {
             double r = R / 255.0;
             double g = G / 255.0;
