@@ -20,7 +20,6 @@ namespace TestBinarBredly
         private byte[,] massByteImageBinar = null;
         private int width = -1;
         private int height = -1;
-        private int StrideWidth = 0;
         private int d = 8;
         private double procentObl = 15;
         private byte white = 1;
@@ -191,6 +190,7 @@ namespace TestBinarBredly
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             white = 0xFF;
             black = 0x00;
+            await Task.Run(() => InitMassiv());
             await Task.Run(() => BitmapToByteArray());
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
@@ -201,41 +201,49 @@ namespace TestBinarBredly
         #endregion
 
         #region private функции
+        private void InitMassiv()
+        {
+            imageIntegrOrig = new double[height + 1, width + 1];
+            imageIntegrBinar = new int[height + 1, width + 1];
+            massByteImageOrig = new double[height, width];
+            massByteImageBinar = new byte[height, width];
+        }
 
         private void ByteArrayToBitmap()
         {
             imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
             BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            IntPtr ptr = bmpData.Scan0;
-            int width8bpp = bmpData.Stride;
+            IntPtr ptr;
+            IntPtr ptrConst = bmpData.Scan0;
+            int StrideWidth = bmpData.Stride;
 
             for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < width8bpp; j++)
+                ptr = ptrConst + i * StrideWidth;
+                for (int j = 0; j < width; j++)
                 {
-                    if (j < width)
-                        Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
+                    Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
                     ptr += 0x01;
                 }
             }
             imageBinar.UnlockBits(bmpData);
         }
 
-        private async Task BitmapToByteArray()
+        private void BitmapToByteArray()
         {
             BitmapData bmpData = imageOrig.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, imageOrig.PixelFormat);
-            IntPtr ptr = bmpData.Scan0;
+            IntPtr ptr;
+            IntPtr ptrConst = bmpData.Scan0;
+            int StrideWidth = bmpData.Stride;
 
             switch (imageOrig.PixelFormat)
             {
                 case PixelFormat.Format8bppIndexed:
                     {
-                        StrideWidth = bmpData.Stride;
-                        await Task.Run(() => InitMassiv());
-
                         for (int i = 0; i < height; i++)
                         {
-                            for (int j = 0; j < StrideWidth; j++)
+                            ptr = ptrConst + i * StrideWidth;
+                            for (int j = 0; j < width; j++)
                             {
                                 massByteImageOrig[i, j] = Marshal.ReadByte(ptr);
                                 ptr += 0x01;
@@ -246,12 +254,10 @@ namespace TestBinarBredly
 
                 case PixelFormat.Format24bppRgb:
                     {
-                        StrideWidth = bmpData.Stride / 3;
-                        await Task.Run(() => InitMassiv());
-
                         for (int i = 0; i < height; i++)
                         {
-                            for (int j = 0; j < StrideWidth; j++)
+                            ptr = ptrConst + i * StrideWidth;
+                            for (int j = 0; j < width; j++)
                             {
                                 double B = Marshal.ReadByte(ptr);
                                 ptr += 0x01;
@@ -262,10 +268,6 @@ namespace TestBinarBredly
 
                                 massByteImageOrig[i, j] = 0.2126 * R + 0.7152 * G + 0.0722 * B;
                             }
-                            if (StrideWidth * 3 < bmpData.Stride)
-                            {
-                                ptr += bmpData.Stride - StrideWidth * 3;
-                            }
                         }
                     }
                     break;
@@ -275,14 +277,6 @@ namespace TestBinarBredly
                     }
             }
             imageOrig.UnlockBits(bmpData);
-        }
-
-        private void InitMassiv()
-        {
-            imageIntegrOrig = new double[height + 1, width + 1];
-            imageIntegrBinar = new int[height + 1, width + 1];
-            massByteImageOrig = new double[height, StrideWidth];
-            massByteImageBinar = new byte[height, width];
         }
 
         private void CreateIntegralImage()
