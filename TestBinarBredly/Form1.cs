@@ -33,7 +33,7 @@ namespace TestBinarBredly
             {
                 try
                 {
-                    photoObj.SetImageOrig = new Bitmap(open_dialog.FileName);
+                    photoObj.SetImageOrig(new Bitmap(open_dialog.FileName));
                     pictureBox1.Image = photoObj.GetImageOrig;
 
                     label4.Text = "Ширина: " + photoObj.Width + " px";
@@ -71,8 +71,8 @@ namespace TestBinarBredly
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            photoObj.SetOblastD = (int)numericUpDown1.Value;
-            photoObj.SetProcent = (double)numericUpDown2.Value;
+            photoObj.SetOblastD((int)numericUpDown1.Value);
+            photoObj.SetProcent((double)numericUpDown2.Value);
             await photoObj.StartBradlyBinar();
             pictureBox1.Image = photoObj.GetImageBinariz;
 

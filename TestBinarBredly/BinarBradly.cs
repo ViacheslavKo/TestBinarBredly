@@ -24,10 +24,10 @@ namespace TestBinarBredly
         private double procentObl = 15;
         private byte white = 1;
         private byte black = 0;
+        //public static List<SettingThreadCam> settingList = new List<SettingThreadCam>();
         #endregion
 
         #region Конструкторы
-
         /// <summary>
         /// Инициализирует пустой экземпляр класса.
         /// </summary>
@@ -57,59 +57,12 @@ namespace TestBinarBredly
             this.imageOrig = Original;
             this.width = imageOrig.Width;
             this.height = imageOrig.Height;
-            this.SetOblastD = OblastD;
-            this.SetProcent = Procent_srObl;
+            SetOblastD(OblastD);
+            SetProcent(Procent_srObl);
         }
         #endregion
 
         #region Свойства
-        /// <summary>
-        /// Загрузить новое оригинальное изображение.
-        /// </summary>
-        public Bitmap SetImageOrig
-        {
-            set
-            {
-                this.imageOrig = value;
-                this.width = imageOrig.Width;
-                this.height = imageOrig.Height;
-
-                imageBinar = null;
-                imageIntegrOrig = null;
-                massByteImageOrig = null;
-                massByteImageBinar = null;
-                imageIntegrBinar = null;
-            }
-        }
-
-        /// <summary>
-        /// Установить D - размер области для вычисления средней яркости вокруг пикселя. (width / d)
-        /// </summary>
-        public int SetOblastD
-        {
-            set
-            {
-                if (value > 0 && value <= width)
-                    d = width / value;
-                else
-                    throw new ArgumentException("Argument is not correct.");
-            }
-        }
-
-        /// <summary>
-        /// Порог для сравнения яркости пикселя со средней яркостью по области. (%)
-        /// </summary>
-        public double SetProcent
-        {
-            set
-            {
-                if (value <= 100 && value >= -100)
-                    procentObl = value;
-                else
-                    throw new ArgumentException("Argument is not correct.");
-            }
-        }
-
         /// <summary>
         /// Получить ширину изображения.
         /// </summary>
@@ -161,6 +114,46 @@ namespace TestBinarBredly
         public int[,] GetImageIntegrBinar
         {
             get => imageIntegrBinar;
+        }
+        #endregion
+
+        #region Set-функции
+        /// <summary>
+        /// Загрузить новое оригинальное изображение.
+        /// </summary>
+        public void SetImageOrig(Bitmap value)
+        {
+            this.imageOrig = value;
+            this.width = imageOrig.Width;
+            this.height = imageOrig.Height;
+
+            imageBinar = null;
+            imageIntegrOrig = null;
+            massByteImageOrig = null;
+            massByteImageBinar = null;
+            imageIntegrBinar = null;
+        }
+
+        /// <summary>
+        /// Установить D - размер области для вычисления средней яркости вокруг пикселя. (width / d)
+        /// </summary>
+        public void SetOblastD(int value)
+        {
+            if (value > 0 && value <= width)
+                d = width / value;
+            else
+                throw new ArgumentException("Argument is not correct.");
+        }
+
+        /// <summary>
+        /// Порог для сравнения яркости пикселя со средней яркостью по области. (%)
+        /// </summary>
+        public void SetProcent(double value)
+        {
+            if (value <= 100 && value >= -100)
+                procentObl = value;
+            else
+                throw new ArgumentException("Argument is not correct.");
         }
         #endregion
 
@@ -329,9 +322,7 @@ namespace TestBinarBredly
                         massByteImageBinar[i, j] = white;
                     }
 
-                    // Не помню нужно было тебе бинаризированное интегрированное изображение. Пока закоментировал, но еще есть свойство для получения этого массива.
-                    // Добавляет еще ~0.055 сек. к обработке.
-                    //imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
+                    imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
                 }
             }
         }
@@ -355,5 +346,14 @@ namespace TestBinarBredly
             return (max + min) / 2;
         }
         #endregion
+    }
+
+
+    public class SettingThreadCam
+    {
+
+
+
+
     }
 }
