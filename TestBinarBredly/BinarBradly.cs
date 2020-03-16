@@ -174,6 +174,7 @@ namespace TestBinarBredly
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             white = 1;
             black = 0;
+            await Task.Run(() => InitMassiv());
             await Task.Run(() => BitmapToByteArray());
             await Task.Run(() => CreateIntegralImage());
             await Task.Run(() => BradlyBinarization());
