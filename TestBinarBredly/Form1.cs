@@ -66,6 +66,7 @@ namespace TestBinarBredly
             saveBinariz.Enabled = false;
             Binarization.Enabled = false;
             Open.Enabled = false;
+            button1.Enabled = false;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
