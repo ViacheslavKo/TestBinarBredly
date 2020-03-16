@@ -41,7 +41,6 @@ namespace TestBinarBredly
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = false;
                     button1.Enabled = false;
-                    button2.Enabled = false;
                 }
                 catch
                 {
@@ -65,8 +64,8 @@ namespace TestBinarBredly
         {
             SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
             saveBinariz.Enabled = false;
-            Open.Enabled = false;
             Binarization.Enabled = false;
+            Open.Enabled = false;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -80,12 +79,11 @@ namespace TestBinarBredly
             TimeSpan ts = stopWatch.Elapsed;
             label7.Text = ts.Seconds + ":" + ts.Milliseconds;
 
-            Binarization.Enabled = true;
-            Open.Enabled = true;
-            saveBinariz.Enabled = true;
+            button1.Text = "Оригинал";
             button1.Enabled = true;
-            button2.Enabled = false;
+            Binarization.Enabled = true;
             saveBinariz.Enabled = true;
+            Open.Enabled = true;
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
@@ -129,16 +127,16 @@ namespace TestBinarBredly
 
         private void button1_Click(object sender, EventArgs e)
         {
-            pictureBox1.Image = photoObj.GetImageOrig;
-            button1.Enabled = false;
-            button2.Enabled = true;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = photoObj.GetImageBinariz;
-            button1.Enabled = true;
-            button2.Enabled = false;
+            if (button1.Text == "Оригинал")
+            {
+                pictureBox1.Image = photoObj.GetImageOrig;
+                button1.Text = "Обработанное";
+            }
+            else
+            {
+                pictureBox1.Image = photoObj.GetImageBinariz;
+                button1.Text = "Оригинал";
+            }
         }
     }
 }

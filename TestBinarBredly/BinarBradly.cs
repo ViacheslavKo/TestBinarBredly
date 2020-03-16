@@ -207,10 +207,11 @@ namespace TestBinarBredly
             imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
             BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             IntPtr ptr = bmpData.Scan0;
+            int width8bpp = bmpData.Stride;
 
             for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < StrideWidth; j++)
+                for (int j = 0; j < width8bpp; j++)
                 {
                     if (j < width)
                         Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
@@ -260,6 +261,10 @@ namespace TestBinarBredly
                                 ptr += 0x01;
 
                                 massByteImageOrig[i, j] = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+                            }
+                            if (StrideWidth * 3 < bmpData.Stride)
+                            {
+                                ptr += bmpData.Stride - StrideWidth * 3;
                             }
                         }
                     }

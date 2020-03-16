@@ -6,3 +6,4 @@ C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBina
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.csproj.GenerateResource.cache
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.exe
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.pdb
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.csprojAssemblyReference.cache
