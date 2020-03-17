@@ -20,11 +20,12 @@ namespace TestBinarBredly
         private byte[,] massByteImageBinar = null;
         private int width = -1;
         private int height = -1;
-        private int d = 8;
+        private int areaD = 8;
         private double procentObl = 15;
         private byte white = 1;
         private byte black = 0;
-        //public static List<SettingThreadCam> settingList = new List<SettingThreadCam>();
+        private StatusBinar statusMassiv = StatusBinar.emptyOutputArray;
+        public static List<SettingThreadBinariz> settingList = new List<SettingThreadBinariz>();
         #endregion
 
         #region Конструкторы
@@ -37,6 +38,7 @@ namespace TestBinarBredly
             imageBinar = null;
             massByteImageBinar = null;
             imageIntegrBinar = null;
+            statusMassiv = StatusBinar.noImage;
         }
 
         /// <summary>
@@ -63,6 +65,14 @@ namespace TestBinarBredly
         #endregion
 
         #region Свойства
+        /// <summary>
+        /// Статус состояния готовности массивов для выгрузки.
+        /// </summary>
+        public StatusBinar GetStatus
+        {
+            get => statusMassiv;
+        }
+
         /// <summary>
         /// Получить ширину изображения.
         /// </summary>
@@ -109,7 +119,6 @@ namespace TestBinarBredly
         /// <summary>
         /// Получить массив бинаризированного интегрированного изобр.
         /// Если его нет return -> null
-        /// Размер [height + 1, width + 1]. Полезные данные начинаются с позиции [1, 1]
         /// </summary>
         public int[,] GetImageIntegrBinar
         {
@@ -132,6 +141,7 @@ namespace TestBinarBredly
             massByteImageOrig = null;
             massByteImageBinar = null;
             imageIntegrBinar = null;
+            statusMassiv = StatusBinar.emptyOutputArray;
         }
 
         /// <summary>
@@ -140,7 +150,7 @@ namespace TestBinarBredly
         public void SetOblastD(int value)
         {
             if (value > 0 && value <= width)
-                d = width / value;
+                areaD = width / value;
             else
                 throw new ArgumentException("Argument is not correct.");
         }
@@ -165,6 +175,7 @@ namespace TestBinarBredly
         public async Task StartBradlyBinar_0and1()
         {
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
+            statusMassiv = StatusBinar.inProcess;
             white = 1;
             black = 0;
             await Task.Run(() => InitMassiv());
@@ -173,6 +184,7 @@ namespace TestBinarBredly
             await Task.Run(() => BradlyBinarization());
             imageIntegrOrig = null;
             massByteImageOrig = null;
+            statusMassiv = StatusBinar.completed;
         }
 
         /// <summary>
@@ -182,6 +194,7 @@ namespace TestBinarBredly
         public async Task StartBradlyBinar()
         {
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
+            statusMassiv = StatusBinar.inProcess;
             white = 0xFF;
             black = 0x00;
             await Task.Run(() => InitMassiv());
@@ -191,6 +204,46 @@ namespace TestBinarBredly
             await Task.Run(() => ByteArrayToBitmap());
             imageIntegrOrig = null;
             massByteImageOrig = null;
+            statusMassiv = StatusBinar.completed;
+        }
+        #endregion
+
+        #region Работа с настройками
+        /// <summary>
+        /// Добавить настройку в лист настроек.
+        /// </summary>
+        public static bool AddSetting(string name, int area, double bright)
+        {
+            SettingThreadBinariz setting = settingList.FirstOrDefault(x => x.Name == name);
+            if (setting == null)
+                settingList.Add(new SettingThreadBinariz { Name = name, IsArea = area, ThresholdBright = bright });
+            else
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Удалить настройку из листа настроек.
+        /// </summary>
+        public static bool DelSetting(string name)
+        {
+            return settingList.Remove(settingList.FirstOrDefault(x => x.Name == name));
+        }
+
+        /// <summary>
+        /// Загрузить настройку из листа настроек в класс.
+        /// </summary>
+        public bool GetSetting(string name)
+        {
+            SettingThreadBinariz setting = settingList.FirstOrDefault(x => x.Name == name);
+            if (setting != null)
+            {
+                areaD = width / setting.IsArea;
+                procentObl = setting.ThresholdBright;
+            }
+            else
+                return false;
+            return true;
         }
         #endregion
 
@@ -312,12 +365,12 @@ namespace TestBinarBredly
             //    {
             //        if (i != 0 && j != 0)
             //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
-            //        else if (i == 0 && j == 0)
-            //            imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];
-            //        else if (j == 0)
+            //        else if (j == 0 && i != 0)
             //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, 0] - imageIntegrOrig[i - 1, 0];
-            //        else
+            //        else if (i == 0 && j != 0)
             //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[0, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[0, j - 1];
+            //        else
+            //            imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];
             //    }
             //}
             #endregion
@@ -326,14 +379,14 @@ namespace TestBinarBredly
         private double SrRectangleSum(int x1, int y1, int x2, int y2)
         {
             double sumLmObl = imageIntegrOrig[x2, y2] + imageIntegrOrig[x1, y1] - imageIntegrOrig[x2, y1] - imageIntegrOrig[x1, y2];
-            double srObl = sumLmObl / (d * d);
+            double srObl = sumLmObl / (areaD * areaD);
             double procentOt_srObl = srObl * (procentObl / 100);
             return srObl - procentOt_srObl;
         }
 
         private void BradlyBinarization()
         {
-            int d2 = d / 2;
+            int d2 = areaD / 2;
             for (int i = 0; i < height; i++)
             {
                 int x1 = i - d2;
@@ -363,12 +416,12 @@ namespace TestBinarBredly
 
                     if (i != 0 && j != 0)
                         imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[i - 1, j - 1];
-                    else if (i == 0 && j == 0)
-                        imageIntegrBinar[0, 0] = massByteImageBinar[0, 0];
-                    else if (j == 0)
+                    else if (j == 0 && i != 0)
                         imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, 0] - imageIntegrBinar[i - 1, 0];
-                    else
+                    else if (i == 0 && j != 0)
                         imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[0, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[0, j - 1];
+                    else
+                        imageIntegrBinar[0, 0] = massByteImageBinar[0, 0];
                 }
             }
         }
@@ -394,12 +447,34 @@ namespace TestBinarBredly
         #endregion
     }
 
-
-    public class SettingThreadCam
+    /// <summary>
+    /// Статус состояния готовности массивов для выгрузки. (GetImageBinariz, GetMassByteImageBinar, GetImageIntegrBinar)
+    /// </summary>
+    public enum StatusBinar
     {
+        /// <summary>
+        /// Пустой экземпляр класса. Чтобы запустить бинаризацию загрузите изображение.
+        /// </summary>
+        noImage = 1,
+        /// <summary>
+        /// Изображение в классе есть, можно запустить процесс бинаризации.
+        /// </summary>
+        emptyOutputArray,
+        /// <summary>
+        /// Запущен процесс бинаризации изображения.
+        /// </summary>
+        inProcess,
+        /// <summary>
+        /// Процесс бинаризации завершен. Массивы готовы для выгрузки.
+        /// </summary>
+        completed
+    };
 
 
-
-
+    public class SettingThreadBinariz
+    {
+        public string Name { get; set; }
+        public int IsArea { get; set; }
+        public double ThresholdBright { get; set; }
     }
 }

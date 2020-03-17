@@ -139,6 +139,47 @@ namespace TestBinarBredly
                 button1.Text = "Оригинал";
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            BinarBradly.AddSetting(textBox1.Text, Convert.ToInt32(textBox2.Text), Convert.ToDouble(textBox3.Text));
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            BinarBradly.DelSetting(textBox1.Text);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            photoObj.GetSetting(textBox1.Text);
+        }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+            SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
+            saveBinariz.Enabled = false;
+            Binarization.Enabled = false;
+            Open.Enabled = false;
+            button1.Enabled = false;
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            await photoObj.StartBradlyBinar();
+            pictureBox1.Image = photoObj.GetImageBinariz;
+
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            label7.Text = ts.Seconds + ":" + ts.Milliseconds;
+
+            button1.Text = "Оригинал";
+            button1.Enabled = true;
+            Binarization.Enabled = true;
+            saveBinariz.Enabled = true;
+            Open.Enabled = true;
+            SetStatusAsync("Процесс бинарицации завершен.");
+        }
     }
 }
 
