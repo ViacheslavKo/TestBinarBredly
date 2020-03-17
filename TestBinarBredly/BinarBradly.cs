@@ -197,8 +197,8 @@ namespace TestBinarBredly
         #region private функции
         private void InitMassiv()
         {
-            imageIntegrOrig = new double[height + 1, width + 1];
-            imageIntegrBinar = new int[height + 1, width + 1];
+            imageIntegrOrig = new double[height, width];
+            imageIntegrBinar = new int[height, width];
             massByteImageOrig = new double[height, width];
             massByteImageBinar = new byte[height, width];
         }
@@ -275,13 +275,52 @@ namespace TestBinarBredly
 
         private void CreateIntegralImage()
         {
-            for (int i = 1; i <= height; i++)
+            imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];//Самая быстрая реализация
+            for (int i = 1; i < width; i++)
             {
-                for (int j = 1; j <= width; j++)
+                imageIntegrOrig[0, i] = imageIntegrOrig[0, i - 1] + massByteImageOrig[0, i];
+            }
+
+            for (int i = 1; i < height; i++)
+            {
+                imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];
+                for (int j = 1; j < width; j++)
                 {
-                    imageIntegrOrig[i, j] = massByteImageOrig[i - 1, j - 1] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
+                    imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
                 }
             }
+
+            #region еще варианты реализации, но они медленнее немного
+            //for (int i = 0; i < height; i++)// такая реализация медленее примерно на ~0.04s
+            //{
+            //    for (int j = 0; j < width; j++)
+            //    {
+            //        if (i == 0 && j == 0)
+            //            imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];
+            //        else if (i == 0)
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[0, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[0, j - 1];
+            //        else if (j == 0)
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, 0] - imageIntegrOrig[i - 1, 0];
+            //        else
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
+            //    }
+            //}
+
+            //for (int i = 0; i < height; i++)// такая реализация быстрее примерно на ~0.005s чем более медленная версия выше
+            //{
+            //    for (int j = 0; j < width; j++)
+            //    {
+            //        if (i != 0 && j != 0)
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
+            //        else if (i == 0 && j == 0)
+            //            imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];
+            //        else if (j == 0)
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, 0] - imageIntegrOrig[i - 1, 0];
+            //        else
+            //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[0, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[0, j - 1];
+            //    }
+            //}
+            #endregion
         }
 
         private double SrRectangleSum(int x1, int y1, int x2, int y2)
@@ -322,7 +361,14 @@ namespace TestBinarBredly
                         massByteImageBinar[i, j] = white;
                     }
 
-                    imageIntegrBinar[i + 1, j + 1] = massByteImageBinar[i, j] + imageIntegrBinar[i, j + 1] + imageIntegrBinar[i + 1, j] - imageIntegrBinar[i, j];
+                    if (i != 0 && j != 0)
+                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[i - 1, j - 1];
+                    else if (i == 0 && j == 0)
+                        imageIntegrBinar[0, 0] = massByteImageBinar[0, 0];
+                    else if (j == 0)
+                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, 0] - imageIntegrBinar[i - 1, 0];
+                    else
+                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[0, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[0, j - 1];
                 }
             }
         }
