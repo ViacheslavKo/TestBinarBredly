@@ -33,6 +33,7 @@ namespace TestBinarBredly
             {
                 try
                 {
+                    //photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
                     photoObj.SetImageOrig(new Bitmap(open_dialog.FileName));
                     pictureBox1.Image = photoObj.GetImageOrig;
 
@@ -41,6 +42,7 @@ namespace TestBinarBredly
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = false;
                     button1.Enabled = false;
+                    button5.Enabled = true;
                 }
                 catch
                 {
@@ -73,7 +75,7 @@ namespace TestBinarBredly
 
             photoObj.SetOblastD((int)numericUpDown1.Value);
             photoObj.SetProcent((double)numericUpDown2.Value);
-            await photoObj.StartBradlyBinar();
+            await Task.Run(() => photoObj.StartBradlyBinar());
             pictureBox1.Image = photoObj.GetImageBinariz;
 
             stopWatch.Stop();
@@ -140,28 +142,15 @@ namespace TestBinarBredly
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            BinarBradly.AddSetting(textBox1.Text, Convert.ToInt32(textBox2.Text), Convert.ToDouble(textBox3.Text));
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            BinarBradly.DelSetting(textBox1.Text);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            photoObj.GetSetting(textBox1.Text);
-        }
-
         private async void button5_Click(object sender, EventArgs e)
         {
             SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
+            photoObj.GetSetting(textBox1.Text);
             saveBinariz.Enabled = false;
             Binarization.Enabled = false;
             Open.Enabled = false;
             button1.Enabled = false;
+            button5.Enabled = false;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -177,8 +166,15 @@ namespace TestBinarBredly
             button1.Enabled = true;
             Binarization.Enabled = true;
             saveBinariz.Enabled = true;
+            button5.Enabled = true;
             Open.Enabled = true;
             SetStatusAsync("Процесс бинарицации завершен.");
+        }
+
+        private void openProfils_Click(object sender, EventArgs e)
+        {
+            ProfSetting Profils = new ProfSetting();
+            Profils.ShowDialog();
         }
     }
 }

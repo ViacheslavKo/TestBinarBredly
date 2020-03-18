@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profils>
+  <profil ID="0">
+    <Name>0</Name>
+    <Area>12</Area>
+    <Bright>5</Bright>
+  </profil>
+  <profil ID="1">
+    <Name>1</Name>
+    <Area>56</Area>
+    <Bright>7</Bright>
+  </profil>
+  <profil ID="2">
+    <Name>2</Name>
+    <Area>8</Area>
+    <Bright>12</Bright>
+  </profil>
+  <profil ID="7">
+    <Name>7</Name>
+    <Area>3</Area>
+    <Bright>9</Bright>
+  </profil>
+  <profil ID="9">
+    <Name>9</Name>
+    <Area>3</Area>
+    <Bright>7</Bright>
+  </profil>
+</Profils>

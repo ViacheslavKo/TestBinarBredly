@@ -15,4 +15,10 @@ C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\Test
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.csproj.GenerateResource.cache
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.exe
 C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.pdb
-C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.csprojAssemblyReference.cache
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.ja.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.ru.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\bin\Debug\ja\TestBinarBredly.resources.dll
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\bin\Debug\ru\TestBinarBredly.resources.dll
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\ja\TestBinarBredly.resources.dll
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\ru\TestBinarBredly.resources.dll

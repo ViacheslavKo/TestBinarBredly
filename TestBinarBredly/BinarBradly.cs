@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace TestBinarBredly
 {
@@ -20,12 +21,13 @@ namespace TestBinarBredly
         private byte[,] massByteImageBinar = null;
         private int width = -1;
         private int height = -1;
-        private int areaD = 8;
+        private int areaD = 324;
         private double procentObl = 15;
         private byte white = 1;
         private byte black = 0;
         private StatusBinar statusMassiv = StatusBinar.emptyOutputArray;
-        public static List<SettingThreadBinariz> settingList = new List<SettingThreadBinariz>();
+        public static List<UserProfil> settingList = new List<UserProfil>();
+        private static object lockSetting = new object();
         #endregion
 
         #region Конструкторы
@@ -212,38 +214,70 @@ namespace TestBinarBredly
         /// <summary>
         /// Добавить настройку в лист настроек.
         /// </summary>
+        /// <returns>True - установлено, False - не установлено (возможно уже существует такая настройка)</returns>
         public static bool AddSetting(string name, int area, double bright)
         {
-            SettingThreadBinariz setting = settingList.FirstOrDefault(x => x.Name == name);
-            if (setting == null)
-                settingList.Add(new SettingThreadBinariz { Name = name, IsArea = area, ThresholdBright = bright });
-            else
-                return false;
-            return true;
+            lock (lockSetting)
+            {
+                UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
+                if (setting == null)
+                    settingList.Add(new UserProfil { Name = name, IsArea = area, ThresholdBright = bright });
+                else
+                    return false;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Изменить настройку в листе настроек.
+        /// </summary>
+        /// <returns>True - установлено новое значение, False - не установлено новое знач.</returns>
+        public static bool EditSetting(string name, int area, double bright)
+        {
+            lock (lockSetting)
+            {
+                UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
+                if (setting != null)
+                {
+                    setting.IsArea = area;
+                    setting.ThresholdBright = bright;
+                }
+                else
+                    return false;
+                return true;
+            }
         }
 
         /// <summary>
         /// Удалить настройку из листа настроек.
         /// </summary>
+        /// <returns>True - удалено, False - не удаено (возможно нет такой настройки)</returns>
         public static bool DelSetting(string name)
         {
-            return settingList.Remove(settingList.FirstOrDefault(x => x.Name == name));
+            lock (lockSetting)
+            {
+                return settingList.Remove(settingList.FirstOrDefault(x => x.Name == name));
+            }
         }
 
         /// <summary>
         /// Загрузить настройку из листа настроек в класс.
         /// </summary>
+        /// <returns>True - найдено и загружено, False - не найдена настройка</returns>
         public bool GetSetting(string name)
         {
-            SettingThreadBinariz setting = settingList.FirstOrDefault(x => x.Name == name);
-            if (setting != null)
+            lock (lockSetting)
             {
-                areaD = width / setting.IsArea;
-                procentObl = setting.ThresholdBright;
+                UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
+                if (setting != null)
+                {
+                    SetOblastD(setting.IsArea);
+                    SetProcent(setting.ThresholdBright);
+                }
+                else
+                    return false;
+                return true;
             }
-            else
-                return false;
-            return true;
         }
         #endregion
 
@@ -455,7 +489,7 @@ namespace TestBinarBredly
         /// <summary>
         /// Пустой экземпляр класса. Чтобы запустить бинаризацию загрузите изображение.
         /// </summary>
-        noImage = 1,
+        noImage = 0,
         /// <summary>
         /// Изображение в классе есть, можно запустить процесс бинаризации.
         /// </summary>
@@ -470,11 +504,79 @@ namespace TestBinarBredly
         completed
     };
 
-
-    public class SettingThreadBinariz
+    /// <summary>
+    /// Для хранения настроек.
+    /// </summary>
+    public class UserProfil
     {
         public string Name { get; set; }
         public int IsArea { get; set; }
         public double ThresholdBright { get; set; }
+
+        /// <summary>
+        /// Сохранит в XML все профили какие есть в входном листе.
+        /// </summary>
+        public static bool SaveProfils(List<UserProfil> list)
+        {
+            try
+            {
+                string path = Environment.CurrentDirectory + @"\Camera Settings\";
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+
+                XDocument xdoc = new XDocument();
+                XElement profils_opions = new XElement("Profils");
+
+                foreach (UserProfil profil in list)
+                {
+                    profils_opions.Add(new XElement($"profil",
+                                           new XAttribute("ID", $"{profil.Name}"),
+                                           new XElement("Name", $"{profil.Name}"),
+                                           new XElement("Area", $"{profil.IsArea}"),
+                                           new XElement("Bright", $"{profil.ThresholdBright}")));
+                }
+
+                xdoc.Add(profils_opions);
+                xdoc.Save(Environment.CurrentDirectory + @"\Camera Settings\SettingProfils.xml");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Загрузит из XML все профили какие есть и создаст объекты SettingThreadBinariz для каждого профиля.
+        /// </summary>
+        public static bool LoadProfils()
+        {
+            try
+            {
+                XDocument profils_opions = XDocument.Load(Environment.CurrentDirectory + @"\Camera Settings\SettingProfils.xml");
+                XElement profil = profils_opions.Element("Profils");
+
+                foreach (XElement xe in profil.Elements("profil").ToList())
+                {
+                    BinarBradly.AddSetting((string)xe.Element("Name"), (int)xe.Element("Area"), (double)xe.Element("Bright"));
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Функция для сортировки профилей настроек.
+        /// Пример использования: BinarBradly.settingList.Sort(UserProfil.CompareProfils);
+        /// </summary>
+        public static int CompareProfils(UserProfil prof1, UserProfil prof2)
+        {
+            return prof1.Name.CompareTo(prof2.Name);
+        }
     }
 }
