@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
-
 using System.Diagnostics;
 
 namespace TestBinarBredly
@@ -22,7 +21,13 @@ namespace TestBinarBredly
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            if (UserProfil.LoadProfils())
+            {
+                SetStatusAsync("Найдены профили настроек.");
+                BinarBradly.settingList.Sort(UserProfil.CompareProfils);
+            }
+            else
+                SetStatusAsync("Не найдено ни одного профиля с настройками.");
         }
 
         private void Open_Click(object sender, EventArgs e)
@@ -174,6 +179,12 @@ namespace TestBinarBredly
         private void openProfils_Click(object sender, EventArgs e)
         {
             ProfSetting Profils = new ProfSetting();
+            Profils.ShowDialog();
+        }
+
+        private void TestImage_Click(object sender, EventArgs e)
+        {
+            TestImageCoef Profils = new TestImageCoef();
             Profils.ShowDialog();
         }
     }

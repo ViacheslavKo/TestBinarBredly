@@ -221,7 +221,7 @@ namespace TestBinarBredly
             {
                 UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
                 if (setting == null)
-                    settingList.Add(new UserProfil { Name = name, IsArea = area, ThresholdBright = bright });
+                    settingList.Add(new UserProfil { Name = name, Area = area, ThresholdBright = bright });
                 else
                     return false;
                 return true;
@@ -239,7 +239,7 @@ namespace TestBinarBredly
                 UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
                 if (setting != null)
                 {
-                    setting.IsArea = area;
+                    setting.Area = area;
                     setting.ThresholdBright = bright;
                 }
                 else
@@ -271,7 +271,7 @@ namespace TestBinarBredly
                 UserProfil setting = settingList.FirstOrDefault(x => x.Name == name);
                 if (setting != null)
                 {
-                    SetOblastD(setting.IsArea);
+                    SetOblastD(setting.Area);
                     SetProcent(setting.ThresholdBright);
                 }
                 else
@@ -510,7 +510,7 @@ namespace TestBinarBredly
     public class UserProfil
     {
         public string Name { get; set; }
-        public int IsArea { get; set; }
+        public int Area { get; set; }
         public double ThresholdBright { get; set; }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace TestBinarBredly
                     profils_opions.Add(new XElement($"profil",
                                            new XAttribute("ID", $"{profil.Name}"),
                                            new XElement("Name", $"{profil.Name}"),
-                                           new XElement("Area", $"{profil.IsArea}"),
+                                           new XElement("Area", $"{profil.Area}"),
                                            new XElement("Bright", $"{profil.ThresholdBright}")));
                 }
 

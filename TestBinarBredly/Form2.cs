@@ -59,14 +59,14 @@ namespace TestBinarBredly
 
         private void ProfSetting_Load(object sender, EventArgs e)
         {
-            if (UserProfil.LoadProfils())
-            {
-                SetStatusAsync("Найдены профили настроек.");
-                VisualProfils();
-                RefreshComboBox();
-            }
-            else
-                SetStatusAsync("Не найдено ни одного профиля с настройками.");
+            //if (UserProfil.LoadProfils())
+            //{
+            //    SetStatusAsync("Найдены профили настроек.");
+            VisualProfils();
+            RefreshComboBox();
+            //}
+            //else
+            //    SetStatusAsync("Не найдено ни одного профиля с настройками.");
 
             //VisualProfils();
             //if (textBox4.Text != String.Empty)
@@ -77,6 +77,7 @@ namespace TestBinarBredly
             //else
             //    SetStatusAsync("Не найдено ни одного профиля с настройками.");
         }
+
 
         private void RefreshComboBox()
         {
@@ -146,7 +147,7 @@ namespace TestBinarBredly
 
             foreach (UserProfil profil in BinarBradly.settingList)
             {
-                Action act = () => textBox4.Text += $"Профиль №{profil.Name}: область D = {profil.IsArea}, порог яркости = {profil.ThresholdBright}%." + Environment.NewLine;
+                Action act = () => textBox4.Text += $"Профиль № {profil.Name}: область D = {profil.Area}, порог яркости = {profil.ThresholdBright}%." + Environment.NewLine;
                 if (InvokeRequired)
                     Invoke(act);
                 else
@@ -172,7 +173,7 @@ namespace TestBinarBredly
                 profil = BinarBradly.settingList.FirstOrDefault(x => x.Name == comboBox1.Text);
 
                 textBox1.Text = profil.Name;
-                textBox2.Text = Convert.ToString(profil.IsArea);
+                textBox2.Text = Convert.ToString(profil.Area);
                 textBox3.Text = Convert.ToString(profil.ThresholdBright);
             }
         }
