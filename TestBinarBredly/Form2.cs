@@ -95,14 +95,19 @@ namespace TestBinarBredly
 
         private void Add_Click(object sender, EventArgs e)
         {
-            if (CheckNullOfSpace() && BinarBradly.AddSetting(textBox1.Text, Convert.ToInt32(textBox2.Text), Convert.ToDouble(textBox3.Text)))
+            if (CheckNullOfSpace())
             {
-                SetStatusAsync($"Профиль №{textBox1.Text} добавлен.");
-                Task.Run(() => VisualProfils());
-                RefreshComboBox();
+                if (BinarBradly.AddSetting(textBox1.Text, Convert.ToInt32(textBox2.Text), Convert.ToDouble(textBox3.Text)))
+                {
+                    SetStatusAsync($"Профиль №{textBox1.Text} добавлен.");
+                    Task.Run(() => VisualProfils());
+                    RefreshComboBox();
+                }
+                else
+                    SetStatusAsync($"Профиль №{textBox1.Text} уже существует.");
             }
             else
-                SetStatusAsync($"Профиль №{textBox1.Text} уже существует.");
+                SetStatusAsync($"Заполнены не все поля.");
         }
 
         private void Edit_Click(object sender, EventArgs e)
@@ -154,7 +159,7 @@ namespace TestBinarBredly
             if (String.IsNullOrWhiteSpace(textBox1.Text) || String.IsNullOrWhiteSpace(textBox2.Text) ||
                 String.IsNullOrWhiteSpace(textBox3.Text))
             {
-                MessageBox.Show("Не заполнены все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Заполнены не все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
