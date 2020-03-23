@@ -79,6 +79,7 @@ namespace TestBinarBredly
                 pictureBox[i].Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
                 tableLayoutPanel2.Controls.Add(pictureBox[i]);
+                pictureBox[i].Click += new EventHandler(pictureBox_Click);
             }
         }
 
@@ -150,6 +151,20 @@ namespace TestBinarBredly
                 otD += (int)numericUpDown3.Value;
                 otProc = (int)numericUpDown2.Value;
             }
+        }
+
+        private void pictureBox_Click(object sender, EventArgs e)
+        {
+            PictureBox picBox = sender as PictureBox;
+            FormScreen Screen = new FormScreen();
+            Task T = Task.Run(() =>
+            {
+                while (Screen.DialogResult != DialogResult.OK)
+                {
+                    Screen.SetImage((Bitmap)picBox.Image);
+                }
+            });
+            Screen.ShowDialog();
         }
     }
 }
