@@ -84,9 +84,9 @@ namespace TestBinarBredly
             Task.Run(() =>
             {
                 comboBox1.Invoke(new Action(() => { comboBox1.Items.Clear(); }));
-                if (BinarBradly.settingList.Count > 0)
+                if (BinarBradly.GetSettingList.Count > 0)
                 {
-                    foreach (UserProfil profil in BinarBradly.settingList)
+                    foreach (UserProfil profil in BinarBradly.GetSettingList)
                     {
                         comboBox1.Invoke(new Action(() => { comboBox1.Items.Add(profil.Name); }));
                     }
@@ -143,9 +143,9 @@ namespace TestBinarBredly
             else
                 action();
 
-            BinarBradly.settingList.Sort(UserProfil.CompareProfils);
+            BinarBradly.GetSettingList.Sort(UserProfil.CompareProfils);
 
-            foreach (UserProfil profil in BinarBradly.settingList)
+            foreach (UserProfil profil in BinarBradly.GetSettingList)
             {
                 Action act = () => textBox4.Text += $"Профиль № {profil.Name}: область D = {profil.Area}, порог яркости = {profil.ThresholdBright}%." + Environment.NewLine;
                 if (InvokeRequired)
@@ -170,7 +170,7 @@ namespace TestBinarBredly
         {
             if (!string.IsNullOrWhiteSpace(comboBox1.Text))
             {
-                profil = BinarBradly.settingList.FirstOrDefault(x => x.Name == comboBox1.Text);
+                profil = BinarBradly.GetSettingList.FirstOrDefault(x => x.Name == comboBox1.Text);
 
                 textBox1.Text = profil.Name;
                 textBox2.Text = Convert.ToString(profil.Area);
@@ -180,7 +180,7 @@ namespace TestBinarBredly
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (UserProfil.SaveProfils(BinarBradly.settingList))
+            if (UserProfil.SaveProfils(BinarBradly.GetSettingList))
             {
                 MessageBox.Show("Настройки сохранены.", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

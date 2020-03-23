@@ -26,7 +26,8 @@ namespace TestBinarBredly
         private byte white = 1;
         private byte black = 0;
         private StatusBinar statusMassiv = StatusBinar.emptyOutputArray;
-        public static List<UserProfil> settingList = new List<UserProfil>();
+        private static List<UserProfil> settingList = new List<UserProfil>();
+        //public static List<BinarBradly> imageBinariz = new List<BinarBradly>();
         private static object lockSetting = new object();
         #endregion
 
@@ -73,6 +74,14 @@ namespace TestBinarBredly
         public StatusBinar GetStatus
         {
             get => statusMassiv;
+        }
+
+        /// <summary>
+        /// Получить лист настроек.
+        /// </summary>
+        public static List<UserProfil> GetSettingList
+        {
+            get => settingList;
         }
 
         /// <summary>

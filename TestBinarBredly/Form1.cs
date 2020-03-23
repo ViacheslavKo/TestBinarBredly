@@ -24,7 +24,7 @@ namespace TestBinarBredly
             if (UserProfil.LoadProfils())
             {
                 SetStatusAsync("Найдены профили настроек.");
-                BinarBradly.settingList.Sort(UserProfil.CompareProfils);
+                BinarBradly.GetSettingList.Sort(UserProfil.CompareProfils);
             }
             else
                 SetStatusAsync("Не найдено ни одного профиля с настройками.");

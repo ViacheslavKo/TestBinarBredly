@@ -14,3 +14,4 @@ C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBina
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\ja\TestBinarBredly.resources.dll
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\ru\TestBinarBredly.resources.dll
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.TestImageCoef.resources
+C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Release\TestBinarBredly.csprojAssemblyReference.cache
