@@ -160,7 +160,7 @@ namespace TestBinarBredly
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            await photoObj.StartBradlyBinar();
+            await Task.Run(() => photoObj.StartBradlyBinar());
             pictureBox1.Image = photoObj.GetImageBinariz;
 
             stopWatch.Stop();

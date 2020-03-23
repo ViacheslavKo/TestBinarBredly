@@ -183,16 +183,16 @@ namespace TestBinarBredly
         /// Запуск обработки фото без создания(Bitmap) обработанного фото.
         /// Массив байт будет состоять из 0 и 1
         /// </summary>
-        public async Task StartBradlyBinar_0and1()
+        public void StartBradlyBinar_0and1()
         {
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             statusMassiv = StatusBinar.inProcess;
             white = 1;
             black = 0;
-            await Task.Run(() => InitMassiv());
-            await Task.Run(() => BitmapToByteArray());
-            await Task.Run(() => CreateIntegralImage());
-            await Task.Run(() => BradlyBinarization());
+            InitMassiv();
+            BitmapToByteArray();
+            CreateIntegralImage();
+            BradlyBinarization();
             imageIntegrOrig = null;
             massByteImageOrig = null;
             statusMassiv = StatusBinar.completed;
@@ -202,17 +202,17 @@ namespace TestBinarBredly
         /// Запуск обработки фото и создать фото(Bitmap).
         /// Массив байт будет состоять из 0х00 и 0xFF (0 и 255)
         /// </summary>
-        public async Task StartBradlyBinar()
+        public void StartBradlyBinar()
         {
             if (imageOrig == null) { throw new ArgumentException("Image not found."); }
             statusMassiv = StatusBinar.inProcess;
             white = 0xFF;
             black = 0x00;
-            await Task.Run(() => InitMassiv());
-            await Task.Run(() => BitmapToByteArray());
-            await Task.Run(() => CreateIntegralImage());
-            await Task.Run(() => BradlyBinarization());
-            await Task.Run(() => ByteArrayToBitmap());
+            InitMassiv();
+            BitmapToByteArray();
+            CreateIntegralImage();
+            BradlyBinarization();
+            ByteArrayToBitmap();
             imageIntegrOrig = null;
             massByteImageOrig = null;
             statusMassiv = StatusBinar.completed;
