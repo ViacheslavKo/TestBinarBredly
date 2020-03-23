@@ -53,6 +53,7 @@
             this.Name = "FormScreen";
             this.Text = "FormScreen";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormScreen_FormClosing);
             this.Load += new System.EventHandler(this.FormScreen_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormScreen_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

@@ -62,5 +62,10 @@ namespace TestBinarBredly
             else
                 action();
         }
+
+        private void FormScreen_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
     }
 }

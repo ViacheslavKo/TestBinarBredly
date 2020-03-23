@@ -187,6 +187,20 @@ namespace TestBinarBredly
             TestImageCoef Profils = new TestImageCoef();
             Profils.ShowDialog();
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            PictureBox picBox = sender as PictureBox;
+            FormScreen Screen = new FormScreen();
+            Task T = Task.Run(() =>
+            {
+                while (Screen.DialogResult != DialogResult.OK)
+                {
+                    Screen.SetImage((Bitmap)picBox.Image);
+                }
+            });
+            Screen.ShowDialog();
+        }
     }
 }
 
