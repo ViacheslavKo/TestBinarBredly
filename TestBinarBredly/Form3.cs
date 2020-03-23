@@ -76,7 +76,7 @@ namespace TestBinarBredly
                 pictureBox[i] = new PictureBox();
                 pictureBox[i].Name = "pictureBox" + i;
                 pictureBox[i].SizeMode = PictureBoxSizeMode.Zoom;
-                pictureBox[i].Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right)));
+                pictureBox[i].Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
                 tableLayoutPanel2.Controls.Add(pictureBox[i]);
             }

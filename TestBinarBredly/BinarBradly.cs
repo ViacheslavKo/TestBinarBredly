@@ -493,6 +493,7 @@ namespace TestBinarBredly
     /// <summary>
     /// Статус состояния готовности массивов для выгрузки. (GetImageBinariz, GetMassByteImageBinar, GetImageIntegrBinar)
     /// </summary>
+    [Flags]
     public enum StatusBinar
     {
         /// <summary>
@@ -502,15 +503,15 @@ namespace TestBinarBredly
         /// <summary>
         /// Изображение в классе есть, можно запустить процесс бинаризации.
         /// </summary>
-        emptyOutputArray,
+        emptyOutputArray = 1,
         /// <summary>
         /// Запущен процесс бинаризации изображения.
         /// </summary>
-        inProcess,
+        inProcess = 2,
         /// <summary>
         /// Процесс бинаризации завершен. Массивы готовы для выгрузки.
         /// </summary>
-        completed
+        completed = 3
     };
 
     /// <summary>
