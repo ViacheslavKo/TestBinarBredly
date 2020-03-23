@@ -27,8 +27,8 @@ namespace TestBinarBredly
         private byte black = 0;
         private StatusBinar statusMassiv = StatusBinar.emptyOutputArray;
         private static List<UserProfil> settingList = new List<UserProfil>();
-        //public static List<BinarBradly> imageBinariz = new List<BinarBradly>();
         private static object lockSetting = new object();
+        //public static List<BinarBradly> imageBinariz = new List<BinarBradly>();
         #endregion
 
         #region Конструкторы
@@ -77,7 +77,7 @@ namespace TestBinarBredly
         }
 
         /// <summary>
-        /// Получить лист настроек.
+        /// Получить лист настроек (профилей).
         /// </summary>
         public static List<UserProfil> GetSettingList
         {
@@ -270,7 +270,7 @@ namespace TestBinarBredly
         }
 
         /// <summary>
-        /// Загрузить настройку из листа настроек в класс.
+        /// Загрузить настройку из листа настроек в экземпляр класса.
         /// </summary>
         /// <returns>True - найдено и загружено, False - не найдена настройка</returns>
         public bool GetSetting(string name)
@@ -558,7 +558,7 @@ namespace TestBinarBredly
         }
 
         /// <summary>
-        /// Загрузит из XML все профили какие есть и создаст объекты SettingThreadBinariz для каждого профиля.
+        /// Загрузит из XML все профили какие есть и создаст объекты UserProfil для каждого профиля.
         /// </summary>
         public static bool LoadProfils()
         {
