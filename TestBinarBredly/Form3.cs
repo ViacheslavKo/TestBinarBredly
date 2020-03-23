@@ -126,9 +126,43 @@ namespace TestBinarBredly
             Open.Enabled = false;
             start.Enabled = false;
             await TestImageView();
+
+            //TestImage();
+
             start.Enabled = true;
             Open.Enabled = true;
             SetStatusAsync("Процесс обработки завершен.");
+        }
+
+        //BinarBradly[] testPhoto = new BinarBradly[12];
+        //private void TestImage()
+        //{
+        //    int otD = (int)numericUpDown1.Value;
+        //    int otProc = (int)numericUpDown2.Value;
+        //    int n = 0;
+
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        for (int j = 0; j < 4; j++)
+        //        {
+        //            testPhoto[n] = new BinarBradly(photoObj.GetImageOrig);
+        //            testPhoto[n].SetOblastD(otD);
+        //            testPhoto[n].SetProcent(otProc);
+        //            Task.Run(() => testPhoto[n].StartBradlyBinar());
+        //            otProc += (int)numericUpDown4.Value;
+        //            n++;
+        //        }
+        //        otD += (int)numericUpDown3.Value;
+        //        otProc = (int)numericUpDown2.Value;
+        //    }
+        //}
+
+        private void ImageViev(object sender, EventArgs e)
+        {
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    pictureBox[i].Image = testPhoto[i].GetImageBinariz;
+            //}
         }
 
         private async Task TestImageView()
