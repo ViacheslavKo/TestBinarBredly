@@ -192,14 +192,17 @@ namespace TestBinarBredly
         {
             PictureBox picBox = sender as PictureBox;
             FormScreen Screen = new FormScreen();
-            Task T = Task.Run(() =>
+            if (photoObj.GetStatus == StatusBinar.completed)
             {
-                while (Screen.DialogResult != DialogResult.OK)
+                Task T = Task.Run(() =>
                 {
-                    Screen.SetImage((Bitmap)picBox.Image);
-                }
-            });
-            Screen.ShowDialog();
+                    while (Screen.DialogResult != DialogResult.OK)
+                    {
+                        Screen.SetImage((Bitmap)picBox.Image);
+                    }
+                });
+                Screen.ShowDialog();
+            }
         }
     }
 }

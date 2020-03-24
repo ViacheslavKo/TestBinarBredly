@@ -163,7 +163,7 @@ namespace TestBinarBredly
             if (value > 0 && value <= width)
                 areaD = width / value;
             else
-                throw new ArgumentException("Argument is not correct.");
+                throw new ArgumentOutOfRangeException("Argument is not correct.");
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace TestBinarBredly
             if (value <= 100 && value >= -100)
                 procentObl = value;
             else
-                throw new ArgumentException("Argument is not correct.");
+                throw new ArgumentOutOfRangeException("Argument is not correct.");
         }
         #endregion
 
@@ -185,7 +185,7 @@ namespace TestBinarBredly
         /// </summary>
         public void StartBradlyBinar_0and1()
         {
-            if (imageOrig == null) { throw new ArgumentException("Image not found."); }
+            if (imageOrig == null) { throw new ArgumentNullException("Image not found."); }
             statusMassiv = StatusBinar.inProcess;
             white = 1;
             black = 0;
@@ -204,7 +204,7 @@ namespace TestBinarBredly
         /// </summary>
         public void StartBradlyBinar()
         {
-            if (imageOrig == null) { throw new ArgumentException("Image not found."); }
+            if (imageOrig == null) { throw new ArgumentNullException("Image not found."); }
             statusMassiv = StatusBinar.inProcess;
             white = 0xFF;
             black = 0x00;
@@ -363,7 +363,7 @@ namespace TestBinarBredly
                     break;
                 default:
                     {
-                        throw new ArgumentException("PixelFormat is not correct.");
+                        throw new FormatException("PixelFormat image is not correct.");// TypeAccessException или KeyNotFoundException или FormatException
                     }
             }
             imageOrig.UnlockBits(bmpData);
