@@ -193,15 +193,21 @@ namespace TestBinarBredly
             FormScreen Screen = new FormScreen();
             if (photoObj.GetStatus == StatusBinar.completed)
             {
-                Task T = Task.Run(() =>
-                {
-                    while (Screen.DialogResult != DialogResult.OK)
-                    {
-                        Screen.SetImage((Bitmap)picBox.Image);
-                    }
-                });
+                Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
                 Screen.ShowDialog();
             }
+
+            //if (photoObj.GetStatus == StatusBinar.completed)
+            //{
+            //    Task T = Task.Run(() =>
+            //    {
+            //        while (Screen.DialogResult != DialogResult.OK)
+            //        {
+            //            Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
+            //        }
+            //    });
+            //    Screen.ShowDialog();
+            //}
         }
     }
 }

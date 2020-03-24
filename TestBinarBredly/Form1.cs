@@ -150,7 +150,7 @@ namespace TestBinarBredly
         private async void button5_Click(object sender, EventArgs e)
         {
             SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
-            photoObj.GetSetting(textBox1.Text);
+            photoObj.LoadSetting(textBox1.Text);
             saveBinariz.Enabled = false;
             Binarization.Enabled = false;
             Open.Enabled = false;
@@ -194,13 +194,7 @@ namespace TestBinarBredly
             FormScreen Screen = new FormScreen();
             if (photoObj.GetStatus == StatusBinar.completed)
             {
-                Task T = Task.Run(() =>
-                {
-                    while (Screen.DialogResult != DialogResult.OK)
-                    {
-                        Screen.SetImage((Bitmap)picBox.Image);
-                    }
-                });
+                Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
                 Screen.ShowDialog();
             }
         }

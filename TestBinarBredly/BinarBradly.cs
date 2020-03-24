@@ -273,7 +273,7 @@ namespace TestBinarBredly
         /// Загрузить настройку из листа настроек в экземпляр класса.
         /// </summary>
         /// <returns>True - найдено и загружено, False - не найдена настройка</returns>
-        public bool GetSetting(string name)
+        public bool LoadSetting(string name)
         {
             lock (lockSetting)
             {
