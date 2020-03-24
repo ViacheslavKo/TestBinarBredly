@@ -22,7 +22,7 @@ namespace TestBinarBredly
         private void Form3_Load(object sender, EventArgs e)
         {
             AddPictureBox();
-            LabelText();
+            AddLabel();
         }
 
         CancellationTokenSource cancelTokenStatus = new CancellationTokenSource();
@@ -83,7 +83,7 @@ namespace TestBinarBredly
             }
         }
 
-        private void LabelText()
+        private void AddLabel()
         {
             for (int i = 0; i < labels.Length; i++)
             {
@@ -157,13 +157,13 @@ namespace TestBinarBredly
         //    }
         //}
 
-        private void ImageViev(object sender, EventArgs e)
-        {
-            //for (int i = 0; i < 12; i++)
-            //{
-            //    pictureBox[i].Image = testPhoto[i].GetImageBinariz;
-            //}
-        }
+        //private void ImageViev(object sender, EventArgs e)
+        //{
+        //    //for (int i = 0; i < 12; i++)
+        //    //{
+        //    //    pictureBox[i].Image = testPhoto[i].GetImageBinariz;
+        //    //}
+        //}
 
         private async Task TestImageView()
         {

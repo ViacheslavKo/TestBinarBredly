@@ -221,6 +221,28 @@ namespace TestBinarBredly
 
         #region Работа с настройками
         /// <summary>
+        /// Загрузит из XML все профили какие есть и создаст объекты UserProfil для каждого профиля в листе List<UserProfil> settingList.
+        /// </summary>
+        public static bool LoadProfils()
+        {
+            try
+            {
+                XDocument profils_opions = XDocument.Load(Environment.CurrentDirectory + @"\Camera Settings\SettingProfils.xml");
+                XElement profil = profils_opions.Element("Profils");
+
+                foreach (XElement xe in profil.Elements("profil").ToList())
+                {
+                    BinarBradly.AddSetting((string)xe.Element("Name"), (int)xe.Element("Area"), (double)xe.Element("Bright"));
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Добавить настройку в лист настроек.
         /// </summary>
         /// <returns>True - установлено, False - не установлено (возможно уже существует такая настройка)</returns>
@@ -559,29 +581,7 @@ namespace TestBinarBredly
         }
 
         /// <summary>
-        /// Загрузит из XML все профили какие есть и создаст объекты UserProfil для каждого профиля.
-        /// </summary>
-        public static bool LoadProfils()
-        {
-            try
-            {
-                XDocument profils_opions = XDocument.Load(Environment.CurrentDirectory + @"\Camera Settings\SettingProfils.xml");
-                XElement profil = profils_opions.Element("Profils");
-
-                foreach (XElement xe in profil.Elements("profil").ToList())
-                {
-                    BinarBradly.AddSetting((string)xe.Element("Name"), (int)xe.Element("Area"), (double)xe.Element("Bright"));
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Функция для сортировки профилей настроек.
+        /// Параметр для сортировки профилей настроек по имени.
         /// Пример использования: BinarBradly.settingList.Sort(UserProfil.CompareProfils);
         /// </summary>
         public static int CompareProfils(UserProfil prof1, UserProfil prof2)

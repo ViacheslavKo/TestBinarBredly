@@ -52,7 +52,7 @@ namespace TestBinarBredly
         {
             label1 = new Label();
             label1.Name = "Label1";
-            label1.Font = new Font("Microsoft YaHei", 12);
+            label1.Font = new Font("Microsoft YaHei", 14);
             label1.BackColor = Color.White;
             label1.BorderStyle = BorderStyle.FixedSingle;
             label1.Text = "Обработанное";

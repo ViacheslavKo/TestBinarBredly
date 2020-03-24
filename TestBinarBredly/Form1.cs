@@ -21,7 +21,7 @@ namespace TestBinarBredly
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (UserProfil.LoadProfils())
+            if (BinarBradly.LoadProfils())
             {
                 SetStatusAsync("Найдены профили настроек.");
                 BinarBradly.GetSettingList.Sort(UserProfil.CompareProfils);
