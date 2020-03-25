@@ -21,15 +21,21 @@ namespace TestBinarBredly
 
         private void Form3_Load(object sender, EventArgs e)
         {
+            InitFormVisual();
             AddPictureBox();
             AddLabel();
+            AddButton();
         }
 
         CancellationTokenSource cancelTokenStatus = new CancellationTokenSource();
         CancellationToken tokenStatus;
         BinarBradly photoObj = new BinarBradly();
-        Label[] labels = new Label[12];
-        PictureBox[] pictureBox = new PictureBox[12];
+        int lenght = 0;
+        Label[] labels;
+        PictureBox[] pictureBox;
+        Button[] buttons;
+        Parametrs[] parametr;
+        bool isWork = false;
 
         void SetStatusAsync(string Message, bool Hide = true)
         {
@@ -69,9 +75,19 @@ namespace TestBinarBredly
             });
         }
 
+        private void InitFormVisual()
+        {
+            lenght = tableLayoutPanel2.RowCount * tableLayoutPanel2.ColumnCount;
+
+            parametr = new Parametrs[lenght];
+            labels = new Label[lenght];
+            pictureBox = new PictureBox[lenght];
+            buttons = new Button[lenght];
+        }
+
         private void AddPictureBox()
         {
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < lenght; i++)
             {
                 pictureBox[i] = new PictureBox();
                 pictureBox[i].Name = "pictureBox" + i;
@@ -79,13 +95,13 @@ namespace TestBinarBredly
                 pictureBox[i].Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
                 tableLayoutPanel2.Controls.Add(pictureBox[i]);
-                pictureBox[i].Click += new EventHandler(pictureBox_Click);
+                pictureBox[i].Click += new EventHandler(PictureBox_Click);
             }
         }
 
         private void AddLabel()
         {
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < lenght; i++)
             {
                 labels[i] = new Label();
                 labels[i].Name = "Label" + i;
@@ -100,6 +116,25 @@ namespace TestBinarBredly
             }
         }
 
+        private void AddButton()
+        {
+            for (int i = 0; i < lenght; i++)
+            {
+                buttons[i] = new Button();
+                buttons[i].Size = new Size(105, 27);
+                //buttons[i].Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+                //buttons[i].Dock = DockStyle.Bottom;
+                buttons[i].Location = new Point(0, 220);
+                buttons[i].UseVisualStyleBackColor = true;
+                buttons[i].Font = new Font("Microsoft YaHei", 10);
+                buttons[i].Name = Convert.ToString(i);
+                buttons[i].Text = "Исследовать";
+
+                pictureBox[i].Controls.Add(buttons[i]);
+                buttons[i].Click += new EventHandler(Button_Click);
+            }
+        }
+
         private void Open_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_dialog = new OpenFileDialog();
@@ -111,6 +146,7 @@ namespace TestBinarBredly
                     //photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
                     photoObj.SetImageOrig(new Bitmap(open_dialog.FileName));
                     start.Enabled = true;
+                    Analiz.Enabled = true;
                 }
                 catch
                 {
@@ -120,18 +156,9 @@ namespace TestBinarBredly
             }
         }
 
-        private async void start_Click(object sender, EventArgs e)
+        private void start_Click(object sender, EventArgs e)
         {
-            SetStatusAsync("Процесс обработки запущен.", false);
-            Open.Enabled = false;
-            start.Enabled = false;
-            await TestImageView();
-
-            //TestImage();
-
-            start.Enabled = true;
-            Open.Enabled = true;
-            SetStatusAsync("Процесс обработки завершен.");
+            Start((int)numericUpDown1.Value, (int)numericUpDown2.Value, (int)numericUpDown3.Value, (int)numericUpDown4.Value);
         }
 
         //BinarBradly[] testPhoto = new BinarBradly[12];
@@ -165,49 +192,80 @@ namespace TestBinarBredly
         //    //}
         //}
 
-        private async Task TestImageView()
+        private async void Start(int beginD, int beginProc, int shagD, int shagProc)
         {
-            int otD = (int)numericUpDown1.Value;
-            int otProc = (int)numericUpDown2.Value;
+            if (!isWork)
+            {
+                isWork = true;
+                SetStatusAsync("Процесс обработки запущен.", false);
+                Open.Enabled = false;
+                start.Enabled = false;
+                Analiz.Enabled = false;
+                await TestImageView(beginD, beginProc, shagD, shagProc);
+                start.Enabled = true;
+                Open.Enabled = true;
+                Analiz.Enabled = true;
+                SetStatusAsync("Процесс обработки завершен.");
+                isWork = false;
+            }
+            else
+                MessageBox.Show("Уже запущена обработка.\nПодождите завершения обработки фото.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private async Task TestImageView(int beginD, int beginProc, int shagD, int shagProc)
+        {
+            int otProc2 = beginProc;
             int n = 0;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < tableLayoutPanel2.RowCount; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < tableLayoutPanel2.ColumnCount; j++)
                 {
-                    photoObj.SetOblastD(otD);
-                    photoObj.SetProcent(otProc);
+                    parametr[n] = new Parametrs { Area = beginD, Bright = otProc2 };
+                    photoObj.SetOblastD(parametr[n].Area);
+                    photoObj.SetProcent(parametr[n].Bright);
                     await Task.Run(() => photoObj.StartBradlyBinar());
-                    labels[n].Text = $"D = {otD}, % = {otProc}.";
+                    labels[n].Text = $"D = {parametr[n].Area}, % = {parametr[n].Bright}.";
                     pictureBox[n++].Image = photoObj.GetImageBinariz;
-                    otProc += (int)numericUpDown4.Value;
+                    otProc2 += shagProc;
                 }
-                otD += (int)numericUpDown3.Value;
-                otProc = (int)numericUpDown2.Value;
+                beginD += shagD;
+                otProc2 = beginProc;
             }
         }
 
-        private void pictureBox_Click(object sender, EventArgs e)
+        private void PictureBox_Click(object sender, EventArgs e)
         {
             PictureBox picBox = sender as PictureBox;
             FormScreen Screen = new FormScreen();
-            if (photoObj.GetStatus == StatusBinar.completed)
+            if (!isWork && photoObj.GetStatus == StatusBinar.completed)
             {
                 Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
                 Screen.ShowDialog();
             }
-
-            //if (photoObj.GetStatus == StatusBinar.completed)
-            //{
-            //    Task T = Task.Run(() =>
-            //    {
-            //        while (Screen.DialogResult != DialogResult.OK)
-            //        {
-            //            Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
-            //        }
-            //    });
-            //    Screen.ShowDialog();
-            //}
         }
+
+        private void Button_Click(object sender, EventArgs e)
+        {
+            int nom = Convert.ToInt32((sender as Button).Name);
+            if (!isWork && photoObj.GetStatus == StatusBinar.completed && parametr[nom].Area != 1)
+            {
+                Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
+            }
+            else
+                return;
+        }
+
+        private void Analiz_Click(object sender, EventArgs e)
+        {
+            Start(2, 1, 5, 5);
+        }
+    }
+
+    public class Parametrs
+    {
+        //public int Name { get; set; }
+        public int Area { get; set; }
+        public int Bright { get; set; }
     }
 }
