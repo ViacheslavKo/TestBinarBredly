@@ -315,10 +315,10 @@ namespace TestBinarBredly
         #region private функции
         private void InitMassiv()
         {
-            imageIntegrOrig = new double[width, height];
-            imageIntegrBinar = new int[width, height];
-            massByteImageOrig = new double[width, height];
-            massByteImageBinar = new byte[width, height];
+            imageIntegrOrig = new double[height, width];
+            imageIntegrBinar = new int[height, width];
+            massByteImageOrig = new double[height, width];
+            massByteImageBinar = new byte[height, width];
         }
 
         private void ByteArrayToBitmap()
@@ -334,7 +334,7 @@ namespace TestBinarBredly
                 ptr = ptrConst + i * StrideWidth;
                 for (int j = 0; j < width; j++)
                 {
-                    Marshal.WriteByte(ptr, massByteImageBinar[j, i]);
+                    Marshal.WriteByte(ptr, massByteImageBinar[i, j]);
                     ptr += 0x01;
                 }
             }
@@ -357,7 +357,7 @@ namespace TestBinarBredly
                             ptr = ptrConst + i * StrideWidth;
                             for (int j = 0; j < width; j++)
                             {
-                                massByteImageOrig[j, i] = Marshal.ReadByte(ptr);
+                                massByteImageOrig[i, j] = Marshal.ReadByte(ptr);
                                 ptr += 0x01;
                             }
                         }
@@ -378,7 +378,7 @@ namespace TestBinarBredly
                                 double R = Marshal.ReadByte(ptr);
                                 ptr += 0x01;
 
-                                massByteImageOrig[j, i] = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+                                massByteImageOrig[i, j] = 0.2126 * R + 0.7152 * G + 0.0722 * B;
                             }
                         }
                     }
@@ -394,51 +394,21 @@ namespace TestBinarBredly
         private void CreateIntegralImage()
         {
             imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];//Самая быстрая реализация
-
             for (int i = 1; i < width; i++)
-            {
-                imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];
-            }
-
-            for (int i = 1; i < height; i++)
             {
                 imageIntegrOrig[0, i] = imageIntegrOrig[0, i - 1] + massByteImageOrig[0, i];
             }
 
-            for (int i = 1; i < width; i++)
+            for (int i = 1; i < height; i++)
             {
-                //imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];//если перенести эту строчку сюда, то обработа увеличится на 0,025s примерно
-                for (int j = 1; j < height; j++)
+                imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];
+                for (int j = 1; j < width; j++)
                 {
-                    //imageIntegrOrig[0, j] = imageIntegrOrig[0, j - 1] + massByteImageOrig[0, j];// если перенести И эту строчку сюда, то обработа увеличится в общем на 0,04s примерно
                     imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
                 }
             }
 
             #region еще варианты реализации, но они медленнее немного
-
-            //imageIntegrOrig[0, 0] = massByteImageOrig[0, 0];//Самая быстрая реализация
-
-            //for (int i = 1; i < width; i++)
-            //{
-            //    imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];
-            //}
-
-            //for (int i = 1; i < height; i++)
-            //{
-            //    imageIntegrOrig[0, i] = imageIntegrOrig[0, i - 1] + massByteImageOrig[0, i];
-            //}
-
-            //for (int i = 1; i < width; i++)
-            //{
-            //    //imageIntegrOrig[i, 0] = imageIntegrOrig[i - 1, 0] + massByteImageOrig[i, 0];//если перенести эту строчку сюда, то обработа увеличится на 0,025s примерно
-            //    for (int j = 1; j < height; j++)
-            //    {
-            //        //imageIntegrOrig[0, j] = imageIntegrOrig[0, j - 1] + massByteImageOrig[0, j];// если перенести И эту строчку сюда, то обработа увеличится в общем на 0,04s примерно
-            //        imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
-            //    }
-            //}
-
             //for (int i = 0; i < height; i++)// такая реализация медленее примерно на ~0.04s
             //{
             //    for (int j = 0; j < width; j++)
@@ -454,9 +424,9 @@ namespace TestBinarBredly
             //    }
             //}
 
-            //for (int i = 1; i < width; i++)//быстрая на равне даже с самой быстрой почти.. но не стабильная.  одна и таже фотка может обрабатываться то 0,289s то 0,378s
+            //for (int i = 0; i < height; i++)// такая реализация быстрее примерно на ~0.005s чем более медленная версия выше
             //{
-            //    for (int j = 1; j < height; j++)
+            //    for (int j = 0; j < width; j++)
             //    {
             //        if (i != 0 && j != 0)
             //            imageIntegrOrig[i, j] = massByteImageOrig[i, j] + imageIntegrOrig[i - 1, j] + imageIntegrOrig[i, j - 1] - imageIntegrOrig[i - 1, j - 1];
@@ -482,23 +452,23 @@ namespace TestBinarBredly
         private void BradlyBinarization()
         {
             int d2 = areaD / 2;
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < height; i++)
             {
                 int x1 = i - d2;
                 int x2 = i + d2;
                 if (x1 < 0)
                     x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
+                if (x2 >= height)
+                    x2 = height - 1;
 
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < width; j++)
                 {
                     int y1 = j - d2;
                     int y2 = j + d2;
                     if (y1 < 0)
                         y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    if (y2 >= width)
+                        y2 = width - 1;
 
                     if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
                     {

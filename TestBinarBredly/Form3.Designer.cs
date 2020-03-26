@@ -44,6 +44,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.backAnaliz = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -104,6 +105,7 @@
             this.tableLayoutPanel5.Controls.Add(this.Open, 4, 0);
             this.tableLayoutPanel5.Controls.Add(this.start, 5, 0);
             this.tableLayoutPanel5.Controls.Add(this.Analiz, 6, 0);
+            this.tableLayoutPanel5.Controls.Add(this.backAnaliz, 6, 1);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 797);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
@@ -286,6 +288,19 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1520, 788);
             this.tableLayoutPanel2.TabIndex = 5;
             // 
+            // backAnaliz
+            // 
+            this.backAnaliz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.backAnaliz.Location = new System.Drawing.Point(1143, 44);
+            this.backAnaliz.Name = "backAnaliz";
+            this.backAnaliz.Size = new System.Drawing.Size(184, 27);
+            this.backAnaliz.TabIndex = 11;
+            this.backAnaliz.Text = "Назад";
+            this.backAnaliz.UseVisualStyleBackColor = true;
+            this.backAnaliz.Click += new System.EventHandler(this.backAnaliz_Click);
+            // 
             // TestImageCoef
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -331,5 +346,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button Analiz;
+        private System.Windows.Forms.Button backAnaliz;
     }
 }

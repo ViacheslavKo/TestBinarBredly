@@ -36,6 +36,7 @@ namespace TestBinarBredly
         Button[] buttons;
         Parametrs[] parametr;
         bool isWork = false;
+        StatusAnaliz statusAnaliz = StatusAnaliz.isEmpty;
 
         void SetStatusAsync(string Message, bool Hide = true)
         {
@@ -245,20 +246,75 @@ namespace TestBinarBredly
             }
         }
 
+        private void Analiz_Click(object sender, EventArgs e)
+        {
+            statusAnaliz = StatusAnaliz.inProcess;
+            Start(1, 1, 4, 5);
+            statusAnaliz = StatusAnaliz.begin;
+        }
+
         private void Button_Click(object sender, EventArgs e)
         {
             int nom = Convert.ToInt32((sender as Button).Name);
-            if (!isWork && photoObj.GetStatus == StatusBinar.completed && parametr[nom].Area != 1)
+            if (!isWork && photoObj.GetStatus == StatusBinar.completed && parametr[nom].Area != 1 &&
+                statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess)
             {
-                Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
+                statusAnaliz = StatusAnaliz.inProcess;
+                //Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
+                switch (statusAnaliz)
+                {
+                    case StatusAnaliz.begin:
+                        {
+                            Start(parametr[nom].Area, parametr[nom].Bright, 4, 2);
+                            statusAnaliz = StatusAnaliz.one;
+                        }
+                        break;
+                    case StatusAnaliz.one:
+                        {
+                            Start(parametr[nom].Area, parametr[nom].Bright, 2, 2);
+                            statusAnaliz = StatusAnaliz.two;
+                        }
+                        break;
+                    case StatusAnaliz.two:
+                        {
+                            Start(parametr[nom].Area, parametr[nom].Bright, 1, 1);
+                            statusAnaliz = StatusAnaliz.thr;
+                        }
+                        break;
+                }
             }
             else
                 return;
         }
 
-        private void Analiz_Click(object sender, EventArgs e)
+        private void backAnaliz_Click(object sender, EventArgs e)
         {
-            Start(2, 1, 5, 5);
+            if (statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess && statusAnaliz != StatusAnaliz.begin)
+            {
+                statusAnaliz = StatusAnaliz.inProcess;
+                //Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
+                //switch (statusAnaliz)
+                //{
+                //    case StatusAnaliz.begin:
+                //        {
+                //            Start(parametr[nom].Area, parametr[nom].Bright, 4, 2);
+                //            statusAnaliz = StatusAnaliz.one;
+                //        }
+                //        break;
+                //    case StatusAnaliz.one:
+                //        {
+                //            Start(parametr[nom].Area, parametr[nom].Bright, 2, 2);
+                //            statusAnaliz = StatusAnaliz.two;
+                //        }
+                //        break;
+                //    case StatusAnaliz.two:
+                //        {
+                //            Start(parametr[nom].Area, parametr[nom].Bright, 1, 1);
+                //            statusAnaliz = StatusAnaliz.thr;
+                //        }
+                //        break;
+                //}
+            }
         }
     }
 
@@ -268,4 +324,37 @@ namespace TestBinarBredly
         public int Area { get; set; }
         public int Bright { get; set; }
     }
+
+    /// <summary>
+    /// Статус этапа анализа фото.
+    /// </summary>
+    [Flags]
+    public enum StatusAnaliz
+    {
+        /// <summary>
+        /// Не запущен анализ.
+        /// </summary>
+        isEmpty = -1,
+        /// <summary>
+        /// Показаны изображения с грубым шагом.
+        /// </summary>
+        begin = 0,
+        /// <summary>
+        /// Идет обработка фото.
+        /// </summary>
+        inProcess = 10,
+
+        /// <summary>
+        /// Первый этап. Цифра задает делитель для шага.
+        /// </summary>
+        one = 4,
+        /// <summary>
+        /// Второй этап. Цифра задает делитель для шага.
+        /// </summary>
+        two = 2,
+        /// <summary>
+        /// Третий этап. Цифра задает делитель для шага.
+        /// </summary>
+        thr = 1,
+    };
 }
