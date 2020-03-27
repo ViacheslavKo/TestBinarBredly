@@ -135,6 +135,22 @@ namespace TestBinarBredly
         {
             get => imageIntegrBinar;
         }
+
+        /// <summary>
+        /// Получить значение исследуемой области вокруг пикселя.
+        /// </summary>
+        public int GetArea
+        {
+            get => width / areaD;
+        }
+
+        /// <summary>
+        /// Получить порог яркости.
+        /// </summary>
+        public double GetBright
+        {
+            get => procentObl;
+        }
         #endregion
 
         #region Set-функции

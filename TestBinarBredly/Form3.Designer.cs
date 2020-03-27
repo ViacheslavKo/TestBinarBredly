@@ -39,12 +39,13 @@
             this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.Open = new System.Windows.Forms.Button();
+            this.backAnaliz = new System.Windows.Forms.Button();
+            this.nextAnaliz = new System.Windows.Forms.Button();
             this.start = new System.Windows.Forms.Button();
             this.Analiz = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.backAnaliz = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -103,9 +104,10 @@
             this.tableLayoutPanel5.Controls.Add(this.numericUpDown4, 3, 1);
             this.tableLayoutPanel5.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.Open, 4, 0);
-            this.tableLayoutPanel5.Controls.Add(this.start, 5, 0);
-            this.tableLayoutPanel5.Controls.Add(this.Analiz, 6, 0);
-            this.tableLayoutPanel5.Controls.Add(this.backAnaliz, 6, 1);
+            this.tableLayoutPanel5.Controls.Add(this.backAnaliz, 5, 1);
+            this.tableLayoutPanel5.Controls.Add(this.nextAnaliz, 6, 1);
+            this.tableLayoutPanel5.Controls.Add(this.start, 4, 1);
+            this.tableLayoutPanel5.Controls.Add(this.Analiz, 5, 0);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 797);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
@@ -218,15 +220,41 @@
             this.Open.UseVisualStyleBackColor = true;
             this.Open.Click += new System.EventHandler(this.Open_Click);
             // 
+            // backAnaliz
+            // 
+            this.backAnaliz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.backAnaliz.Location = new System.Drawing.Point(953, 44);
+            this.backAnaliz.Name = "backAnaliz";
+            this.backAnaliz.Size = new System.Drawing.Size(184, 27);
+            this.backAnaliz.TabIndex = 11;
+            this.backAnaliz.Text = "Назад";
+            this.backAnaliz.UseVisualStyleBackColor = true;
+            this.backAnaliz.Click += new System.EventHandler(this.backAnaliz_Click);
+            // 
+            // nextAnaliz
+            // 
+            this.nextAnaliz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nextAnaliz.Location = new System.Drawing.Point(1143, 44);
+            this.nextAnaliz.Name = "nextAnaliz";
+            this.nextAnaliz.Size = new System.Drawing.Size(184, 27);
+            this.nextAnaliz.TabIndex = 12;
+            this.nextAnaliz.Text = "Вперед";
+            this.nextAnaliz.UseVisualStyleBackColor = true;
+            this.nextAnaliz.Click += new System.EventHandler(this.nextAnaliz_Click);
+            // 
             // start
             // 
             this.start.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.start.Enabled = false;
-            this.start.Location = new System.Drawing.Point(953, 3);
+            this.start.Location = new System.Drawing.Point(763, 44);
             this.start.Name = "start";
-            this.start.Size = new System.Drawing.Size(184, 35);
+            this.start.Size = new System.Drawing.Size(184, 27);
             this.start.TabIndex = 0;
             this.start.Text = "Start";
             this.start.UseVisualStyleBackColor = true;
@@ -238,7 +266,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Analiz.Enabled = false;
-            this.Analiz.Location = new System.Drawing.Point(1143, 3);
+            this.Analiz.Location = new System.Drawing.Point(953, 3);
             this.Analiz.Name = "Analiz";
             this.Analiz.Size = new System.Drawing.Size(184, 35);
             this.Analiz.TabIndex = 10;
@@ -288,19 +316,6 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1520, 788);
             this.tableLayoutPanel2.TabIndex = 5;
             // 
-            // backAnaliz
-            // 
-            this.backAnaliz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.backAnaliz.Location = new System.Drawing.Point(1143, 44);
-            this.backAnaliz.Name = "backAnaliz";
-            this.backAnaliz.Size = new System.Drawing.Size(184, 27);
-            this.backAnaliz.TabIndex = 11;
-            this.backAnaliz.Text = "Назад";
-            this.backAnaliz.UseVisualStyleBackColor = true;
-            this.backAnaliz.Click += new System.EventHandler(this.backAnaliz_Click);
-            // 
             // TestImageCoef
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -313,6 +328,7 @@
             this.Name = "TestImageCoef";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Подбор коэффициентов";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TestImageCoef_FormClosing);
             this.Load += new System.EventHandler(this.Form3_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -347,5 +363,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button Analiz;
         private System.Windows.Forms.Button backAnaliz;
+        private System.Windows.Forms.Button nextAnaliz;
     }
 }

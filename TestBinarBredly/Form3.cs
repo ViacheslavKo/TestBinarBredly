@@ -27,6 +27,7 @@ namespace TestBinarBredly
             AddButton();
         }
 
+        Bitmap image;
         CancellationTokenSource cancelTokenStatus = new CancellationTokenSource();
         CancellationToken tokenStatus;
         BinarBradly photoObj = new BinarBradly();
@@ -37,6 +38,12 @@ namespace TestBinarBredly
         Parametrs[] parametr;
         bool isWork = false;
         StatusAnaliz statusAnaliz = StatusAnaliz.isEmpty;
+        BinarBradly[] beginWindow, oneWindow, twoWindow, thrWindow;
+
+        const int beginD_Analiz = 1;
+        const int beginProc_Analiz = 1;
+        const int shagD_Analiz = 7;
+        const int shagProc_Analiz = 6;
 
         void SetStatusAsync(string Message, bool Hide = true)
         {
@@ -76,6 +83,9 @@ namespace TestBinarBredly
             });
         }
 
+        /// <summary>
+        /// Создать массивы объектов длиной кол-ва окон в tableLayoutPanel2.
+        /// </summary>
         private void InitFormVisual()
         {
             lenght = tableLayoutPanel2.RowCount * tableLayoutPanel2.ColumnCount;
@@ -84,8 +94,15 @@ namespace TestBinarBredly
             labels = new Label[lenght];
             pictureBox = new PictureBox[lenght];
             buttons = new Button[lenght];
+            beginWindow = new BinarBradly[lenght];
+            oneWindow = new BinarBradly[lenght];
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
         }
 
+        /// <summary>
+        /// Вставка PictureBox.
+        /// </summary>
         private void AddPictureBox()
         {
             for (int i = 0; i < lenght; i++)
@@ -100,6 +117,9 @@ namespace TestBinarBredly
             }
         }
 
+        /// <summary>
+        /// Вставка Label.
+        /// </summary>
         private void AddLabel()
         {
             for (int i = 0; i < lenght; i++)
@@ -117,6 +137,9 @@ namespace TestBinarBredly
             }
         }
 
+        /// <summary>
+        /// Вставка Button.
+        /// </summary>
         private void AddButton()
         {
             for (int i = 0; i < lenght; i++)
@@ -136,6 +159,9 @@ namespace TestBinarBredly
             }
         }
 
+        /// <summary>
+        /// Открыть фото.
+        /// </summary>
         private void Open_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_dialog = new OpenFileDialog();
@@ -144,8 +170,7 @@ namespace TestBinarBredly
             {
                 try
                 {
-                    //photoObj = new BinarBradly(new Bitmap(open_dialog.FileName));
-                    photoObj.SetImageOrig(new Bitmap(open_dialog.FileName));
+                    image = new Bitmap(open_dialog.FileName);
                     start.Enabled = true;
                     Analiz.Enabled = true;
                 }
@@ -157,47 +182,37 @@ namespace TestBinarBredly
             }
         }
 
+        /// <summary>
+        /// Открыть фото на весь экран.
+        /// </summary>
+        private void PictureBox_Click(object sender, EventArgs e)
+        {
+            PictureBox picBox = sender as PictureBox;
+            FormScreen Screen = new FormScreen();
+            if (!isWork && photoObj.GetStatus == StatusBinar.completed)
+            {
+                Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
+                Screen.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// Старт с параметрами заданными вручную.
+        /// </summary>
         private void start_Click(object sender, EventArgs e)
         {
             Start((int)numericUpDown1.Value, (int)numericUpDown2.Value, (int)numericUpDown3.Value, (int)numericUpDown4.Value);
         }
 
-        //BinarBradly[] testPhoto = new BinarBradly[12];
-        //private void TestImage()
-        //{
-        //    int otD = (int)numericUpDown1.Value;
-        //    int otProc = (int)numericUpDown2.Value;
-        //    int n = 0;
-
-        //    for (int i = 0; i < 3; i++)
-        //    {
-        //        for (int j = 0; j < 4; j++)
-        //        {
-        //            testPhoto[n] = new BinarBradly(photoObj.GetImageOrig);
-        //            testPhoto[n].SetOblastD(otD);
-        //            testPhoto[n].SetProcent(otProc);
-        //            Task.Run(() => testPhoto[n].StartBradlyBinar());
-        //            otProc += (int)numericUpDown4.Value;
-        //            n++;
-        //        }
-        //        otD += (int)numericUpDown3.Value;
-        //        otProc = (int)numericUpDown2.Value;
-        //    }
-        //}
-
-        //private void ImageViev(object sender, EventArgs e)
-        //{
-        //    //for (int i = 0; i < 12; i++)
-        //    //{
-        //    //    pictureBox[i].Image = testPhoto[i].GetImageBinariz;
-        //    //}
-        //}
-
+        /// <summary>
+        /// Ф-я запуска обработки.
+        /// </summary>
         private async void Start(int beginD, int beginProc, int shagD, int shagProc)
         {
             if (!isWork)
             {
                 isWork = true;
+                statusAnaliz = StatusAnaliz.inProcess;
                 SetStatusAsync("Процесс обработки запущен.", false);
                 Open.Enabled = false;
                 start.Enabled = false;
@@ -213,6 +228,9 @@ namespace TestBinarBredly
                 MessageBox.Show("Уже запущена обработка.\nПодождите завершения обработки фото.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// Запускает обработку вариантов фото.
+        /// </summary>
         private async Task TestImageView(int beginD, int beginProc, int shagD, int shagProc)
         {
             int otProc2 = beginProc;
@@ -222,11 +240,37 @@ namespace TestBinarBredly
             {
                 for (int j = 0; j < tableLayoutPanel2.ColumnCount; j++)
                 {
+                    photoObj = new BinarBradly(image);
                     parametr[n] = new Parametrs { Area = beginD, Bright = otProc2 };
                     photoObj.SetOblastD(parametr[n].Area);
                     photoObj.SetProcent(parametr[n].Bright);
                     await Task.Run(() => photoObj.StartBradlyBinar());
                     labels[n].Text = $"D = {parametr[n].Area}, % = {parametr[n].Bright}.";
+
+                    switch (statusAnaliz)
+                    {
+                        case StatusAnaliz.begin:
+                            {
+                                beginWindow[n] = photoObj;
+                            }
+                            break;
+                        case StatusAnaliz.one:
+                            {
+                                oneWindow[n] = photoObj;
+                            }
+                            break;
+                        case StatusAnaliz.two:
+                            {
+                                twoWindow[n] = photoObj;
+                            }
+                            break;
+                        case StatusAnaliz.thr:
+                            {
+                                thrWindow[n] = photoObj;
+                            }
+                            break;
+                    }
+
                     pictureBox[n++].Image = photoObj.GetImageBinariz;
                     otProc2 += shagProc;
                 }
@@ -235,49 +279,59 @@ namespace TestBinarBredly
             }
         }
 
-        private void PictureBox_Click(object sender, EventArgs e)
-        {
-            PictureBox picBox = sender as PictureBox;
-            FormScreen Screen = new FormScreen();
-            if (!isWork && photoObj.GetStatus == StatusBinar.completed)
-            {
-                Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
-                Screen.ShowDialog();
-            }
-        }
-
+        /// <summary>
+        /// Начать анализ без ввода параметров. (Если надо изменить грбый шаг с кнопки анализ, то делать это тут)
+        /// </summary>
         private void Analiz_Click(object sender, EventArgs e)
         {
-            statusAnaliz = StatusAnaliz.inProcess;
-            Start(1, 1, 4, 5);
+            beginWindow = new BinarBradly[lenght];
+            oneWindow = new BinarBradly[lenght];
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
+            Start(beginD_Analiz, beginProc_Analiz, shagD_Analiz, shagProc_Analiz);
             statusAnaliz = StatusAnaliz.begin;
         }
 
+        private void TestImageCoef_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            beginWindow = new BinarBradly[lenght];
+            oneWindow = new BinarBradly[lenght];
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
+        }
+
+        /// <summary>
+        /// Анализировать с другим шагов вокрух выбранного фото.
+        /// </summary>
         private void Button_Click(object sender, EventArgs e)
         {
             int nom = Convert.ToInt32((sender as Button).Name);
             if (!isWork && photoObj.GetStatus == StatusBinar.completed && parametr[nom].Area != 1 &&
-                statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess)
+                        statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess)
             {
-                statusAnaliz = StatusAnaliz.inProcess;
-                //Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
                 switch (statusAnaliz)
                 {
                     case StatusAnaliz.begin:
                         {
-                            Start(parametr[nom].Area, parametr[nom].Bright, 4, 2);
+                            Start(parametr[nom].Area - 4, parametr[nom].Bright - 8, 4, 4);
                             statusAnaliz = StatusAnaliz.one;
                         }
                         break;
                     case StatusAnaliz.one:
                         {
-                            Start(parametr[nom].Area, parametr[nom].Bright, 2, 2);
+                            Start(parametr[nom].Area - 2, parametr[nom].Bright - 4, 2, 2);
                             statusAnaliz = StatusAnaliz.two;
                         }
                         break;
                     case StatusAnaliz.two:
                         {
-                            Start(parametr[nom].Area, parametr[nom].Bright, 1, 1);
+                            Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
+                            statusAnaliz = StatusAnaliz.thr;
+                        }
+                        break;
+                    case StatusAnaliz.thr:
+                        {
+                            Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
                             statusAnaliz = StatusAnaliz.thr;
                         }
                         break;
@@ -287,37 +341,80 @@ namespace TestBinarBredly
                 return;
         }
 
+        private void ViewList(BinarBradly[] mass)
+        {
+            for (int i = 0; i < lenght; i++)
+            {
+                pictureBox[i].Image = mass[i].GetImageBinariz;
+                parametr[i] = new Parametrs { Area = mass[i].GetArea, Bright = (int)mass[i].GetBright };
+                labels[i].Text = $"D = {parametr[i].Area}, % = {parametr[i].Bright}.";
+
+            }
+        }
+
+        /// <summary>
+        /// Вернуться на шаг назад в анализе фото (показать прошлые варианты).
+        /// </summary>
         private void backAnaliz_Click(object sender, EventArgs e)
         {
-            if (statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess && statusAnaliz != StatusAnaliz.begin)
+            if (statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess)
             {
-                statusAnaliz = StatusAnaliz.inProcess;
-                //Start(parametr[nom].Area - 1, parametr[nom].Bright - 2, 1, 1);
-                //switch (statusAnaliz)
-                //{
-                //    case StatusAnaliz.begin:
-                //        {
-                //            Start(parametr[nom].Area, parametr[nom].Bright, 4, 2);
-                //            statusAnaliz = StatusAnaliz.one;
-                //        }
-                //        break;
-                //    case StatusAnaliz.one:
-                //        {
-                //            Start(parametr[nom].Area, parametr[nom].Bright, 2, 2);
-                //            statusAnaliz = StatusAnaliz.two;
-                //        }
-                //        break;
-                //    case StatusAnaliz.two:
-                //        {
-                //            Start(parametr[nom].Area, parametr[nom].Bright, 1, 1);
-                //            statusAnaliz = StatusAnaliz.thr;
-                //        }
-                //        break;
-                //}
+                switch (statusAnaliz)
+                {
+                    case StatusAnaliz.one:
+                        {
+                            ViewList(beginWindow);
+                            statusAnaliz = StatusAnaliz.begin;
+                        }
+                        break;
+                    case StatusAnaliz.two:
+                        {
+                            ViewList(oneWindow);
+                            statusAnaliz = StatusAnaliz.one;
+                        }
+                        break;
+                    case StatusAnaliz.thr:
+                        {
+                            ViewList(twoWindow);
+                            statusAnaliz = StatusAnaliz.two;
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void nextAnaliz_Click(object sender, EventArgs e)
+        {
+            if (statusAnaliz != StatusAnaliz.isEmpty && statusAnaliz != StatusAnaliz.inProcess)
+            {
+                switch (statusAnaliz)
+                {
+                    case StatusAnaliz.begin:
+                        {
+                            ViewList(oneWindow);
+                            statusAnaliz = StatusAnaliz.one;
+                        }
+                        break;
+                    case StatusAnaliz.one:
+                        {
+                            ViewList(twoWindow);
+                            statusAnaliz = StatusAnaliz.two;
+                        }
+                        break;
+                    case StatusAnaliz.two:
+                        {
+                            ViewList(thrWindow);
+                            statusAnaliz = StatusAnaliz.thr;
+                        }
+                        break;
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Для хранения D и %.
+    /// </summary>
     public class Parametrs
     {
         //public int Name { get; set; }
@@ -336,25 +433,25 @@ namespace TestBinarBredly
         /// </summary>
         isEmpty = -1,
         /// <summary>
-        /// Показаны изображения с грубым шагом.
-        /// </summary>
-        begin = 0,
-        /// <summary>
         /// Идет обработка фото.
         /// </summary>
         inProcess = 10,
 
         /// <summary>
-        /// Первый этап. Цифра задает делитель для шага.
+        /// Показаны изображения с грубым шагом.
         /// </summary>
-        one = 4,
+        begin = 0,
         /// <summary>
-        /// Второй этап. Цифра задает делитель для шага.
+        /// Первый этап.
+        /// </summary>
+        one = 1,
+        /// <summary>
+        /// Второй этап.
         /// </summary>
         two = 2,
         /// <summary>
-        /// Третий этап. Цифра задает делитель для шага.
+        /// Третий этап.
         /// </summary>
-        thr = 1,
+        thr = 3,
     };
 }
