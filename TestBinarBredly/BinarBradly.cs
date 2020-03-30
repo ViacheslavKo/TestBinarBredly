@@ -328,6 +328,58 @@ namespace TestBinarBredly
         }
         #endregion
 
+        /// <summary>
+        /// Получить bitmap из 0 и 1.
+        /// </summary>
+        public static Bitmap ToBitmap(byte[,] array0and1, int width, int height)
+        {
+            Bitmap imageBinar = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
+            BitmapData bmpData = imageBinar.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            IntPtr ptr;
+            IntPtr ptrConst = bmpData.Scan0;
+            int StrideWidth = bmpData.Stride;
+
+            for (int i = 0; i < height; i++)
+            {
+                ptr = ptrConst + i * StrideWidth;
+                for (int j = 0; j < width; j++)
+                {
+                    if (array0and1[j, i] == 1)
+                    {
+                        array0and1[j, i] = 0xFF;
+                    }
+                    Marshal.WriteByte(ptr, array0and1[j, i]);
+                    ptr += 0x01;
+                }
+            }
+            imageBinar.UnlockBits(bmpData);
+            return imageBinar;
+        }
+
+        /// <summary>
+        /// Получить bitmap из 0 и 1. С помощью SetPixel. (долгая функция)
+        /// </summary>
+        public static Bitmap ToBitmap_SetPixel(byte[,] array0and1, int width, int height)
+        {
+            Bitmap imageBinar = new Bitmap(width, height);
+            
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    if (array0and1[i, j] == 0)
+                        imageBinar.SetPixel(i, j, Color.Black);
+
+                    if (array0and1[i, j] == 1)
+                        imageBinar.SetPixel(i, j, Color.White);
+
+                    if (array0and1[i, j] != 0 && array0and1[i, j] != 1)
+                        imageBinar.SetPixel(i, j, Color.Red);
+                }
+            }
+            return imageBinar;
+        }
+
         #region private функции
         private void InitMassiv()
         {

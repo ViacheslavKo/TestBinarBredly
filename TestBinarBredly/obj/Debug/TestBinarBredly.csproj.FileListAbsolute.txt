@@ -25,3 +25,12 @@ C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\ru\TestBin
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.csprojAssemblyReference.cache
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.TestImageCoef.resources
 C:\Users\КОДОИ\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.FormScreen.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\bin\Debug\ja\TestBinarBredly.resources.dll
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\bin\Debug\ru\TestBinarBredly.resources.dll
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.TestImageCoef.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.FormScreen.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.ja.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\TestBinarBredly.ProfSetting.ru.resources
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\ja\TestBinarBredly.resources.dll
+C:\Users\Вячеслав\Desktop\TestBinarBredly\TestBinarBredly\obj\Debug\ru\TestBinarBredly.resources.dll

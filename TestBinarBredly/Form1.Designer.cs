@@ -58,6 +58,8 @@
             this.button5 = new System.Windows.Forms.Button();
             this.openProfils = new System.Windows.Forms.Button();
             this.TestImage = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
@@ -438,6 +440,8 @@
             this.tableLayoutPanel9.Controls.Add(this.button5, 0, 2);
             this.tableLayoutPanel9.Controls.Add(this.openProfils, 1, 2);
             this.tableLayoutPanel9.Controls.Add(this.TestImage, 1, 3);
+            this.tableLayoutPanel9.Controls.Add(this.button2, 1, 4);
+            this.tableLayoutPanel9.Controls.Add(this.button3, 0, 4);
             this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 432);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
             this.tableLayoutPanel9.RowCount = 5;
@@ -510,6 +514,28 @@
             this.TestImage.UseVisualStyleBackColor = true;
             this.TestImage.Click += new System.EventHandler(this.TestImage_Click);
             // 
+            // button2
+            // 
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(143, 128);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(117, 30);
+            this.button2.TabIndex = 26;
+            this.button2.Text = "Фото из 0 и 1";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Enabled = false;
+            this.button3.Location = new System.Drawing.Point(3, 128);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(108, 30);
+            this.button3.TabIndex = 27;
+            this.button3.Text = "Тест 0 и 1";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -577,6 +603,8 @@
         private System.Windows.Forms.Button openProfils;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button TestImage;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

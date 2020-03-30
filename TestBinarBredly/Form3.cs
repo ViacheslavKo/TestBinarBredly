@@ -168,7 +168,7 @@ namespace TestBinarBredly
                 buttons[i] = new Button();
                 buttons[i].Size = new Size(105, 27);
                 buttons[i].Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-                buttons[i].Location = new Point(180, 230);
+                buttons[i].Location = new Point(189, 226);
                 buttons[i].UseVisualStyleBackColor = true;
                 buttons[i].Font = new Font("Microsoft YaHei", 10);
                 buttons[i].Name = Convert.ToString(i);
@@ -191,9 +191,11 @@ namespace TestBinarBredly
                 try
                 {
                     image = new Bitmap(open_dialog.FileName);
+
                     listOpen = ListPhoto.isEmpty;
                     quantityScreen = ListPhoto.isEmpty;
                     statusAnaliz = StatusAnaliz.isEmpty;
+
                     start.Enabled = true;
                     Analiz.Enabled = true;
                     nextAnaliz.Enabled = false;
@@ -336,6 +338,12 @@ namespace TestBinarBredly
                 {
                     case ListPhoto.begin:
                         {
+                            //oneWindow = null;
+                            //twoWindow = null;
+                            //thrWindow = null;
+                            //oneWindow = new BinarBradly[lenght];
+                            //twoWindow = new BinarBradly[lenght];
+                            //thrWindow = new BinarBradly[lenght];
                             listOpen = ListPhoto.one;
                             quantityScreen = ListPhoto.one;
                             Start(parametr[nom].Area - shagOne, parametr[nom].Bright - shagOne * 2, shagOne, shagOne);
@@ -343,6 +351,10 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.one:
                         {
+                            //twoWindow = null;
+                            //thrWindow = null;
+                            //twoWindow = new BinarBradly[lenght];
+                            //thrWindow = new BinarBradly[lenght];
                             listOpen = ListPhoto.two;
                             quantityScreen = ListPhoto.two;
                             Start(parametr[nom].Area - shagTwo, parametr[nom].Bright - shagTwo * 2, shagTwo, shagTwo);
@@ -350,6 +362,8 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.two:
                         {
+                            //thrWindow = null;
+                            //thrWindow = new BinarBradly[lenght];
                             listOpen = ListPhoto.thr;
                             quantityScreen = ListPhoto.thr;
                             Start(parametr[nom].Area - shagThr, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
@@ -357,6 +371,8 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.thr:
                         {
+                            //thrWindow = null;
+                            //thrWindow = new BinarBradly[lenght];
                             Start(parametr[nom].Area - shagThr, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
                         }
                         break;

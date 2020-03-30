@@ -32,7 +32,6 @@
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.Open = new System.Windows.Forms.Button();
             this.Analiz = new System.Windows.Forms.Button();
-            this.start = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
@@ -43,10 +42,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.nextAnaliz = new System.Windows.Forms.Button();
             this.backAnaliz = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.start = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.label5 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
@@ -93,7 +93,7 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 156F));
             this.tableLayoutPanel5.Controls.Add(this.Open, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.Analiz, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.label4, 6, 0);
@@ -108,6 +108,7 @@
             this.tableLayoutPanel5.Controls.Add(this.backAnaliz, 8, 0);
             this.tableLayoutPanel5.Controls.Add(this.label5, 2, 0);
             this.tableLayoutPanel5.Controls.Add(this.start, 2, 1);
+            this.tableLayoutPanel5.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 797);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
@@ -142,20 +143,6 @@
             this.Analiz.Text = "Начать анализ";
             this.Analiz.UseVisualStyleBackColor = true;
             this.Analiz.Click += new System.EventHandler(this.Analiz_Click);
-            // 
-            // start
-            // 
-            this.start.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.start.Enabled = false;
-            this.start.Location = new System.Drawing.Point(420, 40);
-            this.start.Name = "start";
-            this.start.Size = new System.Drawing.Size(114, 31);
-            this.start.TabIndex = 0;
-            this.start.Text = "Запустить";
-            this.start.UseVisualStyleBackColor = true;
-            this.start.Click += new System.EventHandler(this.start_Click);
             // 
             // label4
             // 
@@ -276,6 +263,31 @@
             this.backAnaliz.UseVisualStyleBackColor = true;
             this.backAnaliz.Click += new System.EventHandler(this.backAnaliz_Click);
             // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(437, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(80, 36);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Ручная настройка";
+            // 
+            // start
+            // 
+            this.start.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.start.Enabled = false;
+            this.start.Location = new System.Drawing.Point(420, 40);
+            this.start.Name = "start";
+            this.start.Size = new System.Drawing.Size(114, 31);
+            this.start.TabIndex = 0;
+            this.start.Text = "Запустить";
+            this.start.UseVisualStyleBackColor = true;
+            this.start.Click += new System.EventHandler(this.start_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -301,6 +313,7 @@
             this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel2.ColumnCount = 5;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -317,17 +330,6 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1520, 788);
             this.tableLayoutPanel2.TabIndex = 5;
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(437, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 36);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Ручная настройка";
             // 
             // TestImageCoef
             // 

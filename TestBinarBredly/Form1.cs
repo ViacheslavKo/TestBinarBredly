@@ -47,7 +47,9 @@ namespace TestBinarBredly
                     Binarization.Enabled = true;
                     saveBinariz.Enabled = false;
                     button1.Enabled = false;
+                    button1.Enabled = false;
                     button5.Enabled = true;
+                    button3.Enabled = true;
                 }
                 catch
                 {
@@ -74,6 +76,7 @@ namespace TestBinarBredly
             Binarization.Enabled = false;
             Open.Enabled = false;
             button1.Enabled = false;
+            button2.Enabled = false;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -89,9 +92,11 @@ namespace TestBinarBredly
 
             button1.Text = "Оригинал";
             button1.Enabled = true;
+            button2.Enabled = true;
             Binarization.Enabled = true;
             saveBinariz.Enabled = true;
             Open.Enabled = true;
+
             SetStatusAsync("Процесс бинарицации завершен.");
         }
 
@@ -197,6 +202,48 @@ namespace TestBinarBredly
                 Screen.SetImage((Bitmap)picBox.Image, photoObj.GetImageOrig);
                 Screen.ShowDialog();
             }
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            SetStatusAsync("Процесс преобразования массива запущен. Ждите...", false);
+            button2.Enabled = false;
+            //pictureBox1.Image = BinarBradly.ToBitmap(photoObj.GetMassByteImageBinar, photoObj.Width, photoObj.Height);\
+            pictureBox1.Image = await Task.Run(() => BinarBradly.ToBitmap_SetPixel(photoObj.GetMassByteImageBinar, photoObj.Width, photoObj.Height));
+            button2.Enabled = true;
+            SetStatusAsync("Процесс завершен.");
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            SetStatusAsync("Процесс бинарицации запущен. Ждите...", false);
+            saveBinariz.Enabled = false;
+            Binarization.Enabled = false;
+            Open.Enabled = false;
+            button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            photoObj.SetOblastD((int)numericUpDown1.Value);
+            photoObj.SetProcent((double)numericUpDown2.Value);
+            await Task.Run(() => photoObj.StartBradlyBinar_0and1());
+
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            label7.Text = ts.Seconds + ":" + ts.Milliseconds;
+
+            button1.Text = "Оригинал";
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            Binarization.Enabled = true;
+            saveBinariz.Enabled = true;
+            Open.Enabled = true;
+
+            SetStatusAsync("Процесс бинарицации завершен.");
         }
     }
 }
