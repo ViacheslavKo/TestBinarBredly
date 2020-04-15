@@ -278,7 +278,7 @@ namespace TestBinarBredly
                     parametr[n] = new Parametrs { Area = beginD, Bright = otProc2 };
                     photoObj.SetOblastD(parametr[n].Area);
                     photoObj.SetProcent(parametr[n].Bright);
-                    await Task.Run(() => photoObj.StartBradlyBinar());
+                    await Task.Run(() => photoObj.StartBinarLeaveOnlyBitmap());
                     labels[n].Text = $"D = {parametr[n].Area}, % = {parametr[n].Bright}.";
 
                     switch (listOpen)
@@ -338,12 +338,7 @@ namespace TestBinarBredly
                 {
                     case ListPhoto.begin:
                         {
-                            //oneWindow = null;
-                            //twoWindow = null;
-                            //thrWindow = null;
-                            //oneWindow = new BinarBradly[lenght];
-                            //twoWindow = new BinarBradly[lenght];
-                            //thrWindow = new BinarBradly[lenght];
+                            ClearBegin();
                             listOpen = ListPhoto.one;
                             quantityScreen = ListPhoto.one;
                             Start(parametr[nom].Area - shagOne, parametr[nom].Bright - shagOne * 2, shagOne, shagOne);
@@ -351,10 +346,7 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.one:
                         {
-                            //twoWindow = null;
-                            //thrWindow = null;
-                            //twoWindow = new BinarBradly[lenght];
-                            //thrWindow = new BinarBradly[lenght];
+                            ClearOne();
                             listOpen = ListPhoto.two;
                             quantityScreen = ListPhoto.two;
                             Start(parametr[nom].Area - shagTwo, parametr[nom].Bright - shagTwo * 2, shagTwo, shagTwo);
@@ -362,8 +354,7 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.two:
                         {
-                            //thrWindow = null;
-                            //thrWindow = new BinarBradly[lenght];
+                            ClearTwo();
                             listOpen = ListPhoto.thr;
                             quantityScreen = ListPhoto.thr;
                             Start(parametr[nom].Area - shagThr, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
@@ -371,8 +362,7 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.thr:
                         {
-                            //thrWindow = null;
-                            //thrWindow = new BinarBradly[lenght];
+                            ClearThr();
                             Start(parametr[nom].Area - shagThr, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
                         }
                         break;
@@ -386,6 +376,7 @@ namespace TestBinarBredly
                 {
                     case ListPhoto.begin:
                         {
+                            ClearBegin();
                             listOpen = ListPhoto.one;
                             quantityScreen = ListPhoto.one;
                             Start(parametr[nom].Area, parametr[nom].Bright - shagOne * 2, shagOne, shagOne);
@@ -393,6 +384,7 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.one:
                         {
+                            ClearOne();
                             listOpen = ListPhoto.two;
                             quantityScreen = ListPhoto.two;
                             Start(parametr[nom].Area, parametr[nom].Bright - shagTwo * 2, shagTwo, shagTwo);
@@ -400,6 +392,7 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.two:
                         {
+                            ClearTwo();
                             listOpen = ListPhoto.thr;
                             quantityScreen = ListPhoto.thr;
                             Start(parametr[nom].Area, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
@@ -407,11 +400,61 @@ namespace TestBinarBredly
                         break;
                     case ListPhoto.thr:
                         {
+                            ClearThr();
                             Start(parametr[nom].Area, parametr[nom].Bright - shagThr * 2, shagThr, shagThr);
                         }
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Очистка массивов. Очищает все кроме тех, что в названии функции и ниже по уровню.
+        /// У остальных дальше смысл такой же.
+        /// </summary>
+        private void ClearBegin()
+        {
+            oneWindow = null;
+            twoWindow = null;
+            thrWindow = null;
+            oneWindow = new BinarBradly[lenght];
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
+        }
+
+        private void ClearOne()
+        {
+            twoWindow = null;
+            thrWindow = null;
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
+        }
+
+        private void ClearTwo()
+        {
+            thrWindow = null;
+            thrWindow = new BinarBradly[lenght];
+        }
+
+        private void ClearThr()// Очистка самого себя для замены.
+        {
+            thrWindow = null;
+            thrWindow = new BinarBradly[lenght];
+        }
+
+        /// <summary>
+        /// Очистка всех массивов, включая главный.
+        /// </summary>
+        private void ClearMassWindow()
+        {
+            beginWindow = null;
+            oneWindow = null;
+            twoWindow = null;
+            thrWindow = null;
+            beginWindow = new BinarBradly[lenght];
+            oneWindow = new BinarBradly[lenght];
+            twoWindow = new BinarBradly[lenght];
+            thrWindow = new BinarBradly[lenght];
         }
 
         /// <summary>

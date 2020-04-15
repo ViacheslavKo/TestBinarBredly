@@ -198,6 +198,7 @@ namespace TestBinarBredly
         /// <summary>
         /// Запуск обработки фото без создания(Bitmap) обработанного фото.
         /// Массив байт будет состоять из 0 и 1
+        /// Останется бинаризированный и интегрированный из бинаризированного массивы.
         /// </summary>
         public void StartBradlyBinar_0and1()
         {
@@ -217,6 +218,7 @@ namespace TestBinarBredly
         /// <summary>
         /// Запуск обработки фото и создать фото(Bitmap).
         /// Массив байт будет состоять из 0х00 и 0xFF (0 и 255)
+        /// Останется бинаризированный и интегрированный из бинаризированного массивы.
         /// </summary>
         public void StartBradlyBinar()
         {
@@ -231,6 +233,29 @@ namespace TestBinarBredly
             ByteArrayToBitmap();
             imageIntegrOrig = null;
             massByteImageOrig = null;
+            statusMassiv = StatusBinar.completed;
+        }
+
+        /// <summary>
+        /// Запуск обработки фото и создать фото(Bitmap).
+        /// и очистка всех массивов для освобождения памяти.
+        /// Функция для того чтобы осталась только фотка. Оригинал и обработанная.
+        /// </summary>
+        public void StartBinarLeaveOnlyBitmap()
+        {
+            if (imageOrig == null) { throw new ArgumentNullException("Image not found."); }
+            statusMassiv = StatusBinar.inProcess;
+            white = 0xFF;
+            black = 0x00;
+            InitMassiv();
+            BitmapToByteArray();
+            CreateIntegralImage();
+            BradlyBinarization(false);
+            ByteArrayToBitmap();
+            imageIntegrOrig = null;
+            massByteImageOrig = null;
+            massByteImageBinar = null;
+            imageIntegrBinar = null;
             statusMassiv = StatusBinar.completed;
         }
         #endregion
@@ -547,44 +572,84 @@ namespace TestBinarBredly
             return srObl - procentOt_srObl;
         }
 
-        private void BradlyBinarization()
+        /// <summary>
+        /// Делает бинаризированное изображение из интегрированного и сразу создает
+        /// итегрированное из бинаризированого.
+        /// createInnegr = true - создать интегрированое из бинар
+        /// createInnegr = false - не создавать интегрированое из бинар
+        /// </summary>
+        private void BradlyBinarization(bool createInnegr = true)
         {
             int d2 = areaD / 2;
-            for (int i = 0; i < width; i++)
+            if (createInnegr)
             {
-                int x1 = i - d2;
-                int x2 = i + d2;
-                if (x1 < 0)
-                    x1 = 0;
-                if (x2 >= width)
-                    x2 = width - 1;
-
-                for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
                 {
-                    int y1 = j - d2;
-                    int y2 = j + d2;
-                    if (y1 < 0)
-                        y1 = 0;
-                    if (y2 >= height)
-                        y2 = height - 1;
+                    int x1 = i - d2;
+                    int x2 = i + d2;
+                    if (x1 < 0)
+                        x1 = 0;
+                    if (x2 >= width)
+                        x2 = width - 1;
 
-                    if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
+                    for (int j = 0; j < height; j++)
                     {
-                        massByteImageBinar[i, j] = black;
-                    }
-                    else
-                    {
-                        massByteImageBinar[i, j] = white;
-                    }
+                        int y1 = j - d2;
+                        int y2 = j + d2;
+                        if (y1 < 0)
+                            y1 = 0;
+                        if (y2 >= height)
+                            y2 = height - 1;
 
-                    if (i != 0 && j != 0)
-                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[i - 1, j - 1];
-                    else if (j == 0 && i != 0)
-                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, 0] - imageIntegrBinar[i - 1, 0];
-                    else if (i == 0 && j != 0)
-                        imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[0, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[0, j - 1];
-                    else
-                        imageIntegrBinar[0, 0] = massByteImageBinar[0, 0];
+                        if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
+                        {
+                            massByteImageBinar[i, j] = black;
+                        }
+                        else
+                        {
+                            massByteImageBinar[i, j] = white;
+                        }
+
+                        if (i != 0 && j != 0)
+                            imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[i - 1, j - 1];
+                        else if (j == 0 && i != 0)
+                            imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[i - 1, j] + imageIntegrBinar[i, 0] - imageIntegrBinar[i - 1, 0];
+                        else if (i == 0 && j != 0)
+                            imageIntegrBinar[i, j] = massByteImageBinar[i, j] + imageIntegrBinar[0, j] + imageIntegrBinar[i, j - 1] - imageIntegrBinar[0, j - 1];
+                        else
+                            imageIntegrBinar[0, 0] = massByteImageBinar[0, 0];
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    int x1 = i - d2;
+                    int x2 = i + d2;
+                    if (x1 < 0)
+                        x1 = 0;
+                    if (x2 >= width)
+                        x2 = width - 1;
+
+                    for (int j = 0; j < height; j++)
+                    {
+                        int y1 = j - d2;
+                        int y2 = j + d2;
+                        if (y1 < 0)
+                            y1 = 0;
+                        if (y2 >= height)
+                            y2 = height - 1;
+
+                        if (massByteImageOrig[i, j] < SrRectangleSum(x1, y1, x2, y2))
+                        {
+                            massByteImageBinar[i, j] = black;
+                        }
+                        else
+                        {
+                            massByteImageBinar[i, j] = white;
+                        }
+                    }
                 }
             }
         }
