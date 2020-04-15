@@ -252,8 +252,8 @@ namespace TestBinarBredly
             CreateIntegralImage();
             BradlyBinarization(false);
             ByteArrayToBitmap();
-            imageIntegrOrig = null;
             massByteImageOrig = null;
+            imageIntegrOrig = null;
             massByteImageBinar = null;
             imageIntegrBinar = null;
             statusMassiv = StatusBinar.completed;
